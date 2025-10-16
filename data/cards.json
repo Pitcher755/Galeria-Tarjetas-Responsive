@@ -1,0 +1,27 @@
+{
+    "version": "1.0.0",
+    "lastUpdated": "2024-01-01",
+    "products": [
+        {
+            "id": 1,
+            "title": "Producto Ejemplo",
+            "category": "ejemplo",
+            "price": 99.99,
+            "description": "Descripción del producto de ejemplo",
+            "image": "https://via.placeholder.com/300x200/3B82F6/FFFFFF?text=Producto+Ejemplo",
+            "tags": [
+                "nuevo",
+                "popular"
+            ],
+            "rating": 4.5,
+            "stock": 10
+        }
+    ],
+    "categories": [
+        {
+            "id": "all",
+            "name": "Todos los Productos",
+            "description": "Muestra todos los productos disponibles"
+        }
+    ]
+}

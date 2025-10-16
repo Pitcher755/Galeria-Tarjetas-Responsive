@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="Width=device-width, initial-scale=1.0">
+    <meta name="description" content="Galería de productos responsive con filtrado dinámico">
+    <title>Galería Interactiva de Productos</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <!-- Cabecera principal con título y filtros -->
+    <header class="header" role="banner" aria-label="Cabecera principal">
+        <div class="container">
+            <h1 class="header_title">Galería de Productos</h1>
+            <p class="header_subtitle">Filtra y explora nuestra colección</p>
+
+            <!-- Controles de filtrado -->
+            <nav class="filters" role="navigation" aria-label="Filtros de productos">
+                <div class="filters_container" id="filters-container">
+                    <!-- Los botones se generan dinámicamente con JavaScript -->
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenedor principal de tarjetas -->
+    <main class="main" role="main" aria-label="Contenido principal">
+        <div class="container">
+            <section class="gallery" id="card-container" aria-live="polite" aria-label="Galería de productos">
+                <div class="loading" id="loading">
+                    <p>Cargando productos...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="footer" role="contentinfo" aria-label="Información del pie de página">
+        <div class="container">
+            <p>&copy; 2025 Galería Interactiva. Proyecto Frontend.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+
+</html>
