@@ -1,50 +1,244 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="no-js">
 
 <head>
+    <!-- METADATOS ESENCIALES -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="Width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galería de productos responsive con filtrado dinámico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- METADATOS PARA SEO Y ACCESIBILIDAD -->
+    <meta name="description"
+        content="Galería de productos responsive con filtrado dinámico. Explora nuestra colección de manera responsive y accesible.">
+    <meta name="keywords" content="productos, galería, filtrado, responsive, accesibilidad">
+    <meta name="author" content="PitcherDev">
+
+    <!-- PRELOAD DE RECURSOS CRÍTICOS -->
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="js/script.js" as="script">
+
+    <!-- HOJA DE ESTILOS PINCIPAL -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- FAVICON Y META SOCIAL -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <meta property="og:title" content="Galería Interactiva">
+    <meta property="og:description" content="Explora productos con nuestra galería responsive y accesible">
+    <meta property="og:type" content="website">
+
     <title>Galería Interactiva de Productos</title>
-    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- SCRIPT PARA DETECCIÓN DE JAVASCRIPT -->
+    <script>
+        // Remover la clase no-js si JavaScript está disponible
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+    </script>
+
 </head>
 
 <body>
-    <!-- Cabecera principal con título y filtros -->
-    <header class="header" role="banner" aria-label="Cabecera principal">
-        <div class="container">
-            <h1 class="header_title">Galería de Productos</h1>
-            <p class="header_subtitle">Filtra y explora nuestra colección</p>
+    <!-- SKIP LINK PARA ACCESIBILIDAD -->
+    <a href="#main-content" class="skip-link"> Saltar al contenido principal</a>
 
-            <!-- Controles de filtrado -->
-            <nav class="filters" role="navigation" aria-label="Filtros de productos">
-                <div class="filters_container" id="filters-container">
-                    <!-- Los botones se generan dinámicamente con JavaScript -->
-                </div>
-            </nav>
+    <!-- CABECERA PRINCIPAL -->
+    <header class="header" role="banner" aria-label="Cabecera principal del sitio">
+        <div class="container">
+
+            <!-- LOGO Y TÍTULO -->
+            <div class="header__brand">
+                <h1 class="header__title">
+                    <span aria-hidden="true">🛍️</span>
+                    Galería Interactiva de Productos
+                </h1>
+                <p class="header__subtitle">
+                    Explora filtra y descubre nuestra colección
+                </p>
+            </div>
+
+            <!-- ESTADÍSTICAS DE LA GALERÍA -->
+            <div class="header__stats" aria-live="polite" aria-atomic="true">
+                <span class="stats__item">
+                    <strong id="total-products">0</strong> productos
+                </span>
+                <span class="stats__item">
+                    <strong id="visible-products">0</strong> visibles
+                </span>
+            </div>
         </div>
     </header>
 
-    <!-- Contenedor principal de tarjetas -->
-    <main class="main" role="main" aria-label="Contenido principal">
+    <!-- BARRA DE FILTROS -->
+    <nav class="filters-bar" role="navigation" aria-label="Filtros de productos">
         <div class="container">
-            <section class="gallery" id="card-container" aria-live="polite" aria-label="Galería de productos">
-                <div class="loading" id="loading">
-                    <p>Cargando productos...</p>
+
+            <!-- DESCRIPCIÓN DE LA NAVEGACIÓN -->
+            <h2 class="filters-bar__title sr-only">
+                Filtros de productos disponibles
+            </h2>
+
+            <!-- GRUPO DE FILTROS POR CATEGORÍA -->
+            <div class="filters-group" role="group" aria-labelledby="category-filters-label">
+                <h3 id="category-filters-label" class="filters-group__title">
+                    📂 Filtrar por categoría:
+                </h3>
+
+                <div class="filters__container" id="filters-container">
+                    <!-- Los botones se generan dinámicamente con JavaScript 
+             estructura de ejemplo:
+             <button class="filter-btn active" data-category="all"
+             aria-pressed="true">
+                <span aria-hidden="true">🌐</span>
+                Todos los productos
+                </button>
+             -->
                 </div>
+            </div>
+
+            <!-- BUSQUEDA -->
+            <div class="search-group" role="search" aria-labelledby="search-label">
+                <h3 id="search-label" class="search-group__title sr-only">
+                    Buscar productos
+                </h3>
+                <div class="search-container">
+                    <input type="search" id="product-search" class="search-input" placeholder="🔎 Buscar productos..."
+                        disabled aria-describedby="search-help">
+                    <small id="search-help" class="search-help">
+                        Función de búsqueda disponible en futuras actualizaciones
+                    </small>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="main-content" class="main" role="main" aria-label="Contenido principal de productos">
+        <div class="container">
+
+            <!-- ENCABEZADO DE LA GALERÍA -->
+            <section class="gallery-header" aria-labelledby="gallery-title">
+                <h2 id="gallery-title" class="gallery-title">
+                    Nuestra Colección de Productos
+                </h2>
+                <p class="gallery-description">
+                    Explora nuestra selección cuidadosamente curada. Usa los filtros para encontrar lo que necesitas.
+                </p>
             </section>
+
+            <!-- CONTENEDOR DE TARJETAS -->
+            <section class="gallery" id="card-container" aria-live="polite" aria-relevant="additions removals">
+
+                <!-- ESTADO DE CARGA -->
+                <div class="loading-state" id="loading" role="status" aria-live="polite">
+                    <div class="loading-spinner" aria-hidden="true">
+                        <div class="spinner"></div>
+                    </div>
+                    <p class="loading-text">🔄️ Cargando productos...</p>
+                </div>
+
+                <!-- MENSAJES DE ESTADO -->
+                <div class="empty-state hidden" id="empty-state" role="status" aria-live="polite">
+                    <p class="empty-state__text">📭 No se encontraron productos con los filtros seleccionados</p>
+                    <button class="empty-state__action" id="reset-filters">
+                        🔄️ Mostrar todos los productos
+                    </button>
+                </div>
+
+                <!-- 
+                 LAS TARJETAS SE INSERTARÁN AQUÍ DINÁMICAMENTE
+                 ESTRUCTURA DE EJEMPLO:
+                 <article class="card" data-category="electronica" data-id="1">
+                    <div class="card__image-container">
+                        <img src="producto.jpg" alt="Descripción del producto"
+                        class="card__image">
+                    </div>
+                    <div class="card__content">
+                        <h3 class="card__title">Nombre del Producto</h3>
+                        <p class="card__description">Descripción...</p>
+                        <div class="card__footer">
+                            <span class="card__price">$99.99</span>
+                            <span class="card__category">Electrónica</span>
+                        </div>
+                    </div>
+                </article>
+                -->
+
+            </section>
+
+            <!-- PIE DE LA GALERÍA -->
+            <footer class="gallery-footer" aria-label="Información de la galería">
+                <div class="gallery-info">
+                    <p id="gallery-summary" class="gallery-summary">
+                        Mostrando <strong>0</strong> de <strong>0</strong> productos
+                    </p>
+                </div>
+            </footer>
         </div>
     </main>
 
     <!-- Pie de página -->
-    <footer class="footer" role="contentinfo" aria-label="Información del pie de página">
+    <footer class="site-footer" role="contentinfo" aria-label="Información del sitio">
         <div class="container">
-            <p>&copy; 2025 Galería Interactiva. Proyecto Frontend.</p>
+
+            <!-- INFORMACIÓN DEL PROYECTO -->
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title"> Sobre este proyecto</h3>
+                    <p class="footer-text">
+                        Proyecto Frontend demostrando HTML semántico,
+                        CSS responsive y JavaScript moderno.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">🛠️ Tecnologías</h3>
+                    <ul class="footer-list" aria-label="Tecnologías utilizadas">
+                        <li>HTML5 semántico</li>
+                        <li>CSS3 + Flexbox</li>
+                        <li>JavaScript ES6+</li>
+                        <li>Accesibilidad WCAG</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">📚 Recursos</h3>
+                    <ul class="footer-list" aria-label="Recursos de aprendizaje">
+                        <li><a href="#" class="footer-link">Documentación</a></li>
+                        <li><a href="#" class="footer-link">Código fuente</a></li>
+                        <li><a href="#" class="footer-link">Guía de accesibilidad</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- COPYRIGHT -->
+            <div class="footer-bottom">
+                <p class="copyright">
+                    &copy; 2025 Galería Interactiva.
+                    <span class="nowrap">Proyecto Frontend.</span>
+                </p>
+            </div>
         </div>
     </footer>
 
-    <!-- Scripts JavaScript -->
+    <!-- SCRIPTS JAVASCRIPT -->
     <script src="js/script.js"></script>
+
+    <!-- SCRIPT DE MEJORA PROGRESIVA -->
+    <script>
+        /**
+         * MEJORAS DE USUARIO PARA JAVASCRIPT HABILITADO
+         * @description Añade clases y funcionalidades cuando JS está disponible
+         */
+        document.addEventListener('DOMContentLoaded', function () {
+            // Añadir clase para estilos específicos de JS
+            document.body.classList.add('js-enabled');
+
+            // Mejorar la accesibilidad de elementos dinámicos
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) {
+                loadingElement.setAttribute('aria-busy', 'true');
+            }
+        });
+    </script>
 </body>
 
 </html>
