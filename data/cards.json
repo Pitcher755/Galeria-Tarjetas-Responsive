@@ -1,27 +1,175 @@
 {
     "version": "1.0.0",
-    "lastUpdated": "2024-01-01",
+    "lastUpdated": "2025-10-19",
     "products": [
         {
             "id": 1,
-            "title": "Producto Ejemplo",
-            "category": "ejemplo",
-            "price": 99.99,
-            "description": "Descripción del producto de ejemplo",
-            "image": "https://via.placeholder.com/300x200/3B82F6/FFFFFF?text=Producto+Ejemplo",
+            "title": "Smartphone Galaxy X",
+            "category": "electronica",
+            "price": 699.99,
+            "originalPrice": 799.99,
+            "description": "El último smartphone con pantalla AMOLED de 6.7 pulgadas, triple cámara de 108MP y batería de 5000mAh.",
+            "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
             "tags": [
                 "nuevo",
-                "popular"
+                "popular",
+                "oferta"
             ],
             "rating": 4.5,
-            "stock": 10
+            "reviewCount": 128,
+            "stock": 15,
+            "featured": true
+        },
+        {
+            "id": 2,
+            "title": "Laptop Pro Ultra",
+            "category": "electronica",
+            "price": 1299.99,
+            "description": "Laptop profesional con procesador i7, 16GB RAM, SSD 512GB y pantalla 4K de 15.6 pulgadas.",
+            "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
+            "tags": [
+                "profesional",
+                "potente"
+            ],
+            "rating": 4.8,
+            "reviewCount": 89,
+            "stock": 8,
+            "featured": false
+        },
+        {
+            "id": 3,
+            "title": "Auriculares Bluetooth",
+            "category": "accesorios",
+            "price": 149.99,
+            "originalPrice": 199.99,
+            "description": "Auriculares inalámbricos con cancelación de ruido activa y 30 horas de batería.",
+            "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+            "tags": [
+                "inalámbrico",
+                "oferta"
+            ],
+            "rating": 4.3,
+            "reviewCount": 256,
+            "stock": 0,
+            "featured": false
+        },
+        {
+            "id": 4,
+            "title": "Camiseta Básica",
+            "category": "ropa",
+            "price": 19.99,
+            "description": "Camiseta de algodón 100% en varios colores. Corte regular y calidad premium.",
+            "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
+            "tags": [
+                "básico",
+                "algodón"
+            ],
+            "rating": 4.2,
+            "reviewCount": 342,
+            "stock": 45,
+            "featured": false
+        },
+        {
+            "id": 5,
+            "title": "Zapatillas Running",
+            "category": "deportes",
+            "price": 89.99,
+            "description": "Zapatillas deportivas ideales para running con tecnología de amortiguación avanzada.",
+            "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop",
+            "tags": [
+                "deporte",
+                "running"
+            ],
+            "rating": 4.6,
+            "reviewCount": 167,
+            "stock": 22,
+            "featured": true
+        },
+        {
+            "id": 6,
+            "title": "Libro de Programación",
+            "category": "libros",
+            "price": 34.99,
+            "description": "Guía completa de JavaScript moderno con ejemplos prácticos y proyectos reales.",
+            "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop",
+            "tags": [
+                "educación",
+                "tecnología"
+            ],
+            "rating": 4.7,
+            "reviewCount": 78,
+            "stock": 12,
+            "featured": false
+        },
+        {
+            "id": 7,
+            "title": "Tablet Drawing Pro",
+            "category": "electronica",
+            "price": 449.99,
+            "description": "Tablet para diseñadores con lápiz digital de precisión y pantalla táctil de 10.5 pulgadas.",
+            "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+            "tags": [
+                "diseño",
+                "creativo"
+            ],
+            "rating": 4.4,
+            "reviewCount": 56,
+            "stock": 6,
+            "featured": false
+        },
+        {
+            "id": 8,
+            "title": "Mochila Impermeable",
+            "category": "accesorios",
+            "price": 59.99,
+            "description": "Mochila resistente al agua con compartimento para laptop de hasta 15 pulgadas.",
+            "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop",
+            "tags": [
+                "práctica",
+                "resistente"
+            ],
+            "rating": 4.1,
+            "reviewCount": 203,
+            "stock": 18,
+            "featured": false
         }
     ],
     "categories": [
         {
             "id": "all",
             "name": "Todos los Productos",
+            "icon": "🌐",
             "description": "Muestra todos los productos disponibles"
+        },
+        {
+            "id": "electronica",
+            "name": "Electrónica",
+            "icon": "📱",
+            "description": "Dispositivos electrónicos y tecnológicos"
+        },
+        {
+            "id": "accesorios",
+            "name": "Accesorios",
+            "icon": "🎧",
+            "description": "Complementos y accesorios tecnológicos"
+        },
+        {
+            "id": "ropa",
+            "name": "Ropa",
+            "icon": "👕",
+            "description": "Prendas de vestir y moda"
+        },
+        {
+            "id": "deportes",
+            "name": "Deportes",
+            "icon": "⚽",
+            "description": "Artículos deportivos y fitness"
+        },
+        {
+            "id": "libros",
+            "name": "Libros",
+            "icon": "📚",
+            "description": "Libros educativos y de entretenimiento"
         }
     ]
 }
