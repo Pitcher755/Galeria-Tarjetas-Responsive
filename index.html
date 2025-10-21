@@ -82,15 +82,15 @@
                     📂 Filtrar por categoría:
                 </h3>
 
-                <div class="filters__container" id="filters-container">
+                <div class="filters-container" id="filters-container">
                     <!-- Los botones se generan dinámicamente con JavaScript 
-             estructura de ejemplo:
-             <button class="filter-btn active" data-category="all"
-             aria-pressed="true">
+            estructura de ejemplo:
+            <button class="filter-btn active" data-category="all"
+            aria-pressed="true">
                 <span aria-hidden="true">🌐</span>
                 Todos los productos
                 </button>
-             -->
+            -->
                 </div>
             </div>
 
@@ -107,22 +107,26 @@
                     </small>
                 </div>
             </div>
-
-            <!-- FILTROS AVANZADOS -->
-            <div class="filter-status" id="filter-status" aria-live="polite">
-                <!-- Los filtros se generarán dinámicamente aquí -->
-            </div>
-
-            <!-- FILTROS ACTIVOS -->
-
-            <div class="filter-stats" id="filter-stats">
-                <span id="filter-stats-text">Sin filtros ACTIVOS</span>
-                <button class="clear-filters-btn" id="clear-filters" style="display: none;">
-                    🗑️ Limpiar filtros
-                </button>
-            </div>
         </div>
     </nav>
+
+    <!-- FILTROS AVANZADOS -->
+    <div class="container">
+        <div class="filter-status" id="filter-status" aria-live="polite">
+            <!-- Los filtros se generarán dinámicamente aquí -->
+        </div>
+
+        <!-- FILTROS ACTIVOS -->
+
+        <div class="filter-stats" id="filter-stats">
+            <span id="filter-stats-text">Sin filtros activos</span>
+            <button class="clear-filters-btn" id="clear-filters" style="display: none;">
+                🗑️ Limpiar filtros
+            </button>
+        </div>
+    </div>
+
+
 
     <!-- CONTENIDO PRINCIPAL -->
     <main id="main-content" class="main" role="main" aria-label="Contenido principal de productos">

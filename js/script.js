@@ -152,16 +152,12 @@ const FilterSystem = {
             switch (status) {
                 case 'featured':
                     return product.featured === true;
-                    break;
                 case 'new':
                     return product.tags && product.tags.includes('nuevo');
-                    break;
                 case 'discount':
                     return product.originalPrice && product.originalPrice > product.price;
-                    break;
                 default:
                     return true;
-                    break;
             }
         });
     },
@@ -504,7 +500,7 @@ function initializeStatusFilters() {
         <div class="filter-group">
             <h4 class="filter-group-title">🏷️ Etiquetas</h4>
             <div class="filter-options">
-                ${AppConfig.filters.tagOption.map(filter => `
+                ${AppConfig.filters.tagOptions.map(filter => `
                     <label class="filter-checkbox">
                         <input type="checkbox"
                             value="${filter.id}"
@@ -694,11 +690,11 @@ function updateCategoryFilterButtons(activeButton) {
 /**
  * RESETEAR INTERFAZ DE FILTROS
  * 
- * @function resetFiltersUI
+ * @function resetFilterUI
  * @description Restablece la interfaz de usuario de filtros a su estado inicial
  * @returns {void}
  */
-function resetFiltersUI() {
+function resetFilterUI() {
     // Resetear botones de categoría
     const categoryButtons = document.querySelectorAll('[data-filter-type="category"]');
     categoryButtons.forEach(button => {
