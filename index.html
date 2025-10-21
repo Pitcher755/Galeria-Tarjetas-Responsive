@@ -94,18 +94,32 @@
                 </div>
             </div>
 
-            <!-- BUSQUEDA -->
+            <!-- BUSQUEDA MEJORADA -->
             <div class="search-group" role="search" aria-labelledby="search-label">
                 <h3 id="search-label" class="search-group__title sr-only">
                     Buscar productos
                 </h3>
                 <div class="search-container">
                     <input type="search" id="product-search" class="search-input" placeholder="🔎 Buscar productos..."
-                        disabled aria-describedby="search-help">
+                        aria-describedby="search-help">
                     <small id="search-help" class="search-help">
-                        Función de búsqueda disponible en futuras actualizaciones
+                        Busca por nombre, descripción o etiquetas
                     </small>
                 </div>
+            </div>
+
+            <!-- FILTROS AVANZADOS -->
+            <div class="filter-status" id="filter-status" aria-live="polite">
+                <!-- Los filtros se generarán dinámicamente aquí -->
+            </div>
+
+            <!-- FILTROS ACTIVOS -->
+
+            <div class="filter-stats" id="filter-stats">
+                <span id="filter-stats-text">Sin filtros ACTIVOS</span>
+                <button class="clear-filters-btn" id="clear-filters" style="display: none;">
+                    🗑️ Limpiar filtros
+                </button>
             </div>
         </div>
     </nav>
