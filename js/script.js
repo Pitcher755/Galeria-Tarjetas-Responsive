@@ -1,11 +1,11 @@
 /**
  * GALERÍA INTERACTIVA DE PRODUCTOS
- * 
+ *
  * @file script.js
  * @description Lógica principal para la galería de productos con filtrado dinámico
  * @version 1.0.0
  * @author PitcherDev
- * 
+ *
  * @namespace ProductGallery
  */
 
@@ -19,52 +19,52 @@
  * @property {object} endpoints - URLs para obtener datos
  */
 const AppConfig = {
-    version: '1.0.0',
+    version: "1.0.0",
     debugMode: true,
 
     selectors: {
-        cardContainer: '#card-container',
-        filtersContainer: '#filters-container',
-        loadingElement: '#loading',
-        emptyState: '#empty-state',
-        resetFilters: '#reset-filters',
-        totalProducts: '#total-products',
-        visibleProducts: '#visible-products',
-        gallerySummary: '#gallery-summary',
-        searchInput: '#product-search',
-        filterStatus: '#filter-status',
-        clearFilters: '#clear-filters',
-        filterStats: '#filter-stats'
+        cardContainer: "#card-container",
+        filtersContainer: "#filters-container",
+        loadingElement: "#loading",
+        emptyState: "#empty-state",
+        resetFilters: "#reset-filters",
+        totalProducts: "#total-products",
+        visibleProducts: "#visible-products",
+        gallerySummary: "#gallery-summary",
+        searchInput: "#product-search",
+        filterStatus: "#filter-status",
+        clearFilters: "#clear-filters",
+        filterStats: "#filter-stats",
     },
 
     classes: {
-        hidden: 'hidden',
-        active: 'active',
-        card: 'card',
-        filterBtn: 'filter-btn',
-        featured: 'card--featured',
-        outOfStock: 'card--out-of-stock',
-        filterActive: 'filter-active',
-        filterTag: 'filter-tag',
-        filterCount: 'filter-count'
+        hidden: "hidden",
+        active: "active",
+        card: "card",
+        filterBtn: "filter-btn",
+        featured: "card--featured",
+        outOfStock: "card--out-of-stock",
+        filterActive: "filter-active",
+        filterTag: "filter-tag",
+        filterCount: "filter-count",
     },
 
     filters: {
         statusOptions: [
-            { id: 'featured', name: '⭐ Destacados', icon: '⭐' },
-            { id: 'new', name: '🆕 Nuevos', icon: '🆕' },
-            { id: 'discount', name: '💸 En oferta', icon: '💸' }
+            { id: "featured", name: "Destacados", icon: "⭐" },
+            { id: "new", name: "Nuevos", icon: "🆕" },
+            { id: "discount", name: "En oferta", icon: "💸" },
         ],
         tagOptions: [
-            { id: 'popular', name: '🔥 Populares', icon: '🔥' },
-            { id: 'nuevo', name: '🎉 Nuevo', icon: '🎉' },
-            { id: 'oferta', name: '💰 Oferta', icon: '💰' }
-        ]
+            { id: "popular", name: "Populares", icon: "🔥" },
+            { id: "nuevo", name: "Nuevo", icon: "🎉" },
+            { id: "oferta", name: "Oferta", icon: "💰" },
+        ],
     },
 
     endpoints: {
-        products: './data/cards.json'
-    }
+        products: "./data/cards.json",
+    },
 };
 
 /**
@@ -79,7 +79,7 @@ const AppState = {
     products: [],
     categories: [],
     filteredProducts: [],
-    currentFilter: 'all'
+    currentFilter: "all",
 };
 
 /**
@@ -91,38 +91,43 @@ const AppState = {
  * @property {boolean} showOutOfStock - Mostrar productos agotados
  */
 const FilterSystem = {
-    currentCategory: 'all',
-    searchQuery: '',
+    currentCategory: "all",
+    searchQuery: "",
     activeFilters: {
         status: [],
-        tags: []
+        tags: [],
     },
     showOutOfStock: true,
 
     /**
      * APLICAR TODOS LOS FILTROS COMBINADOS
-     * 
+     *
      * @param {Array} products - Lista de productos a filtrar
      * @returns {Array} Productos filtrados
      */
     applyAllFilters(products) {
-        return products.filter(product => {
-            return this.matchesCategory(product) &&
+        return products.filter((product) => {
+            return (
+                this.matchesCategory(product) &&
                 this.matchesSearch(product) &&
                 this.matchesStatusFilters(product) &&
                 this.matchesTagFilters(product) &&
-                this.matchesStockFilter(product);
+                this.matchesStockFilter(product)
+            );
         });
     },
 
     /**
      * FILTRAR POR CATEGORÍA
-     * 
+     *
      * @param {Object} product - Producto a evaluar
      * @returns {boolean} Si coincide con la categoría
      */
     matchesCategory(product) {
-        return this.currentCategory === 'all' || product.category === this.currentCategory;
+        return (
+            this.currentCategory === "all" ||
+            product.category === this.currentCategory
+        );
     },
 
     /**
@@ -134,27 +139,30 @@ const FilterSystem = {
         if (!this.searchQuery.trim()) return true;
 
         const searchTerm = this.searchQuery.toLowerCase();
-        return product.title.toLowerCase().includes(searchTerm) ||
+        return (
+            product.title.toLowerCase().includes(searchTerm) ||
             product.description.toLowerCase().includes(searchTerm) ||
-            (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+            (product.tags &&
+                product.tags.some((tag) => tag.toLowerCase().includes(searchTerm)))
+        );
     },
 
     /**
      * FILTRAR POR ESTADO (destacado, nuevo, etc.)
-     * 
+     *
      * @param {Object} product - Producto a evaluar
      * @returns {boolean} Si coincide con los filtros de estado
      */
     matchesStatusFilters(product) {
         if (this.activeFilters.status.length === 0) return true;
 
-        return this.activeFilters.status.some(status => {
+        return this.activeFilters.status.some((status) => {
             switch (status) {
-                case 'featured':
+                case "featured":
                     return product.featured === true;
-                case 'new':
-                    return product.tags && product.tags.includes('nuevo');
-                case 'discount':
+                case "new":
+                    return product.tags && product.tags.includes("nuevo");
+                case "discount":
                     return product.originalPrice && product.originalPrice > product.price;
                 default:
                     return true;
@@ -164,21 +172,21 @@ const FilterSystem = {
 
     /**
      * FILTRAR POR ETIQUETAS
-     * 
+     *
      * @param {Object} product - Producto a evaluar
      * @returns {boolean} Si coincide con las etiquetas
      */
     matchesTagFilters(product) {
         if (this.activeFilters.tags.length === 0) return true;
 
-        return this.activeFilters.tags.some(tag =>
-            product.tags && product.tags.includes(tag)
+        return this.activeFilters.tags.some(
+            (tag) => product.tags && product.tags.includes(tag)
         );
     },
 
     /**
      * FILTRAR POR DISPONIBILIDAD
-     * 
+     *
      * @param {Object} product - Producto a evaluar
      * @returns {boolean} Si coincide con el filtro de stock
      */
@@ -188,7 +196,7 @@ const FilterSystem = {
 
     /**
      * AGREGAR FILTRO
-     * 
+     *
      * @param {string} type - Tipo de filtro (status, tags)
      * @param {string} value - Valor del filtro
      */
@@ -200,48 +208,137 @@ const FilterSystem = {
 
     /**
      * REMOVER FILTRO
-     * 
+     *
      * @param {string} type - Tipo de filtro
      * @param {string} value - Valor del filtro
      */
     removeFilter(type, value) {
-        this.activeFilters[type] = this.activeFilters[type].filter(item => item !== value);
+        this.activeFilters[type] = this.activeFilters[type].filter(
+            (item) => item !== value
+        );
     },
 
     /**
      * LIMPIAR TODOS LOS FILTROS
      */
     clearAllFilters() {
-        this.currentCategory = 'all';
-        this.searchQuery = '';
+        this.currentCategory = "all";
+        this.searchQuery = "";
         this.activeFilters = { status: [], tags: [] };
         this.showOutOfStock = true;
     },
 
     /**
      * OBTENER ESTADÍSTICAS DE FILTROS
-     * 
+     *
      * @returns {Object} Estadísticas de los filtros activos
      */
     getFilterStats() {
         return {
-            category: this.currentCategory !== 'all',
-            search: this.searchQuery.trim() !== '',
+            category: this.currentCategory !== "all",
+            search: this.searchQuery.trim() !== "",
             status: this.activeFilters.status.length,
             tags: this.activeFilters.tags.length,
             stock: !this.showOutOfStock,
-            total: (this.currentCategory !== 'all' ? 1 : 0) +
-                (this.searchQuery.trim() !== '' ? 1 : 0) +
+            total:
+                (this.currentCategory !== "all" ? 1 : 0) +
+                (this.searchQuery.trim() !== "" ? 1 : 0) +
                 this.activeFilters.status.length +
                 this.activeFilters.tags.length +
-                (!this.showOutOfStock ? 1 : 0)
+                (!this.showOutOfStock ? 1 : 0),
         };
+    },
+};
+
+/**
+ * SISTEMA DE OPTIMIZACIÓN DE RENDIMIENTO
+ * @type {Object}
+ * @property {boolean} isThrottled - Si las operaciones están limitadas
+ * @property {number} lastRenderTime - Último tiempo de renderizado
+ */
+const PerformanceOptimizer = {
+    isThrottled: false,
+    lastRenderTime: 0,
+    renderDelay: 16,
+
+    /**
+     * RENDERIZADO CON THROTTLE
+     * @param {Function} callback - Función a ejecutar
+     */
+    throttledRender(callback) {
+        if (this.isThrottled) {
+            clearTimeout(this._pending);
+            this._pending = setTimeout(() => {
+                this.isThrottled = false;
+                callback();
+            }, this.renderDelay);
+            return;
+        }
+
+        this.isThrottled = true;
+        callback();
+
+        setTimeout(() => {
+            this.isThrottled = false;
+        }, this.renderDelay);
+    },
+
+    /**
+     * DEBOUNCE PARA BÚSQUEDAS
+     * @param {Function} func - Función a debounce
+     * @param {number} wait - Tiempo de espera
+     * @returns {Function} Función debounced
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    },
+
+    /**
+     * LAZY LOADING DE IMÁGENES
+     */
+    initLazyLoading() {
+        const images = document.querySelectorAll('.card__image[loading="lazy"]');
+
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.classList.remove("loading");
+                    }
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach((img) => imageObserver.observe(img));
+    },
+
+    /**
+     * PRELOAD DE RECURSOS CRÍTICOS
+     */
+    preloadCriticalResources() {
+        // Preload de fuentes
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.href = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🛍️%3C/text%3E%3C/svg%3E';
+        link.as = "image";
+        document.head.appendChild(link);
     }
 };
 
 /**
  * SISTEMA DE LOGGING PARA DESARROLLO
- * 
+ *
  * @namespace Logger
  * @description Utilidades para logging consistente en desarrollo
  */
@@ -253,7 +350,7 @@ const Logger = {
      */
     info: (message, data = null) => {
         if (AppConfig.debugMode) {
-            console.log(`[INFO]: ${message}`, data || '');
+            console.log(`[INFO]: ${message}`, data || "");
         }
     },
 
@@ -264,7 +361,7 @@ const Logger = {
      */
     warn: (message, data = null) => {
         if (AppConfig.debugMode) {
-            console.warn(`⚠️ [warn]: ${message}`, data || '');
+            console.warn(`⚠️ [warn]: ${message}`, data || "");
         }
     },
 
@@ -275,45 +372,68 @@ const Logger = {
      */
     error: (message, error = null) => {
         if (AppConfig.debugMode) {
-            console.error(`[ERROR]: ${message}`, error || '');
+            console.error(`[ERROR]: ${message}`, error || "");
         }
-    }
+    },
 };
 
 /**
  * INICIALIZACIÓN DE LA APLICACIÓN
- * 
+ *
  * @function initApp
  * @description Función principal que inicializa toda la aplicación
  * @returns {void}
  */
 async function initApp() {
-    Logger.info('Inicializando aplicación...');
+    Logger.info("Inicializando aplicación...");
 
     try {
         if (!validateDOMElements()) {
-            throw new Error('Elementos del DOM requeridos no encontrados');
+            throw new Error("Elementos del DOM requeridos no encontrados");
         }
 
         // Mostrar estado de carga
         showLoadingState();
+        showSkeletonLoading();
+        PerformanceOptimizer.preloadCriticalResources();
 
         // Cargar datos e inicializar componentes
         await loadProductData();
         initializeFilters();
         renderAllProducts();
 
-        Logger.info('Aplicación inicializada correctamente');
+        Logger.info("✅ Aplicación inicializada correctamente");
 
     } catch (error) {
-        Logger.error('Error durante la inicialización:', error);
-        showErrorMessage('Error al cargar la galería, Por favor, recargue la página.');
+        Logger.error("Error durante la inicialización:", error);
+        showErrorMessage("Error al cargar la galería, Por favor, recargue la página.");
     }
+}
+
+function applyAllFiltersAndRender() {
+    const container = document.querySelector(AppConfig.selectors.cardContainer);
+    const gallery = document.querySelector('.gallery');
+
+    if (gallery) {
+        gallery.classList.add('filtering');
+    }
+
+    AppState.filteredProducts = FilterSystem.applyAllFilters(AppState.products);
+
+    PerformanceOptimizer.throttledRender(() => {
+        renderFilteredProducts();
+        updateStatistics();
+        updateFilterStats();
+
+        if (gallery) {
+            setTimeout(() => gallery.classList.remove('filtering'), 300);
+        }
+    });
 }
 
 /**
  * VALIDACIÓN DE ELEMENTOS DEL DOM
- * 
+ *
  * @function validateDOMElements
  * @description Verifica que todos los elementos DOM requeridos existan
  * @returns {boolean} True si todos los elementos existen, false en caso contrario
@@ -321,12 +441,12 @@ async function initApp() {
 function validateDOMElements() {
     const requiredSelectors = Object.values(AppConfig.selectors);
 
-    const missingElements = requiredSelectors.filter(selector => {
+    const missingElements = requiredSelectors.filter((selector) => {
         return !document.querySelector(selector);
     });
 
     if (missingElements.length > 0) {
-        Logger.warn(`Elementos DOM no encontrados: ${missingElements.join(', ')}`);
+        Logger.warn(`Elementos DOM no encontrados: ${missingElements.join(", ")}`);
         return false;
     }
 
@@ -335,14 +455,14 @@ function validateDOMElements() {
 
 /**
  * CARGA DE DATOS DE PRODUCTOS
- * 
+ *
  * @async
  * @function loadProductData
  * @description Carga los datos de productos desde el archivo JSON
  * @returns {Promise<void>}
  */
 async function loadProductData() {
-    Logger.info('📥 Cargando datos de productos...');
+    Logger.info("📥 Cargando datos de productos...");
 
     try {
         const response = await fetch(AppConfig.endpoints.products);
@@ -365,67 +485,75 @@ async function loadProductData() {
 
         Logger.info(`${data.products.length} productos cargados correctamente`);
         Logger.info(`${data.categories?.length || 0} categorías cargadas`);
-
     } catch (error) {
-        Logger.error('Error cargando datos de productos:', error);
-        throw new Error('No se pudieron cargar los productos. Verifica la conexión.');
+        Logger.error("Error cargando datos de productos:", error);
+        throw new Error(
+            "No se pudieron cargar los productos. Verifica la conexión."
+        );
     }
 }
 
 /**
  * INICIALIZACIÓN DEL SISTEMA DE FILTRADO MEJORADO
- * 
+ *
  * @function initializeFilters
  * @description Configura y renderiza los botones de filtro
  * @returns {void}
  */
 function initializeFilters() {
-    Logger.info('Inicializando sistema de filtros...');
+    Logger.info("Inicializando sistema de filtros...");
 
     initializeCategoryFilters();
     initializeSearchFilter();
     initializeStatusFilters();
     initializeActiveFiltersDisplay();
 
-    Logger.info('✅ Sistema de filtros avanzado inicializado');
+    Logger.info("✅ Sistema de filtros avanzado inicializado");
 }
 
 /**
  * INICIALIZAR FILTROS POR CATEGORÍA
- * 
+ *
  * @function initializeCategoryFilters
  * @description Configura los filtros por categoría
  * @returns {void}
  */
 function initializeCategoryFilters() {
-    const filtersContainer = document.querySelector(AppConfig.selectors.filtersContainer);
+    const filtersContainer = document.querySelector(
+        AppConfig.selectors.filtersContainer
+    );
 
     if (!filtersContainer) {
-        Logger.warn('Contenedor de filtros no encontrado');
+        Logger.warn("Contenedor de filtros no encontrado");
         return;
     }
 
-    const filterButtonHTML = AppState.categories.map(category => `
-        <button class="filter-btn ${category.id === 'all' ? AppConfig.classes.active : ''}"
+    const filterButtonHTML = AppState.categories
+        .map(
+            (category) => `
+        <button class="filter-btn ${category.id === "all" ? AppConfig.classes.active : ""
+                }"
                 data-category="${category.id}"
                 data-filter-type="category"
-                aria-pressed="${category.id === 'all' ? 'true' : 'false'}">
+                aria-pressed="${category.id === "all" ? "true" : "false"}">
             <span aria-hidden="true">${category.icon}</span>
             ${category.name}
         </button>
-        `).join('');
+        `
+        )
+        .join("");
 
     filtersContainer.innerHTML = filterButtonHTML;
 
-    const filterButtons = filtersContainer.querySelectorAll('.filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', handleCategoryFilterClick);
+    const filterButtons = filtersContainer.querySelectorAll(".filter-btn");
+    filterButtons.forEach((button) => {
+        button.addEventListener("click", handleCategoryFilterClick);
     });
 }
 
 /**
  * INICIALIZAR SISTEMA DE BÚSQUEDA
- * 
+ *
  * @function initializeSearchFilter
  * @description Configura el filtro de búsqueda en tiempo real
  * @returns {void}
@@ -434,7 +562,7 @@ function initializeSearchFilter() {
     const searchInput = document.querySelector(AppConfig.selectors.searchInput);
 
     if (!searchInput) {
-        Logger.warn('Campo de búsqueda no encontrado');
+        Logger.warn("Campo de búsqueda no encontrado");
         return;
     }
 
@@ -443,38 +571,69 @@ function initializeSearchFilter() {
     searchInput.placeholder = "🔎 Buscar productos...";
 
     // Búsqueda en tiempo real con debounce
-    let searchTimeout;
-    searchInput.addEventListener('input', (event) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            FilterSystem.searchQuery = event.target.value.trim();
-            applyAllFiltersAndRender();
-            Logger.info(`🔍 Búsqueda: "${FilterSystem.searchQuery}"`);
-        }, 300);
-    });
+    const debouncedSearch = PerformanceOptimizer.debounce((event) => {
+        FilterSystem.searchQuery = event.target.value.trim();
+        applyAllFiltersAndRender();
+        Logger.info(`🔍 Búsqueda: "${FilterSystem.searchQuery}"`);
+    }, 300);
 
-    // Limpiar búsqueda con Escape
-    searchInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            event.target.value = '';
-            FilterSystem.searchQuery = '';
+    searchInput.addEventListener("input", debouncedSearch);
+
+    searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            event.target.value = "";
+            FilterSystem.searchQuery = "";
             applyAllFiltersAndRender();
         }
     });
 }
 
 /**
- * INICIALIZAR FILTROS DE ESTADO Y ETIQUETAS
+ * MOSTRAR SKELETON LOADING
  * 
+ * @function showSkeletonLoading
+ * @description Muestra esqueletos de carga mientras se cargan los productos
+ * @returns {void}
+ */
+function showSkeletonLoading() {
+    const container = document.querySelector(AppConfig.selectors.cardContainer);
+    if (!container) return;
+    const skeletonCount = 8;
+
+    const skeletonsHTML = Array.from({ length: skeletonCount }, () => `
+        <div class="card skeleton-card" aria-hidden="true">
+            <div class="card__image-container skeleton skeleton-image"></div>
+            <div class="card__content">
+                <div class="skeleton skeleton-text skeleton-text--short"></div>
+                <div class="skeleton skeleton-text skeleton-text--medium"></div>
+                <div class="skeleton skeleton-text" style=width: 40%></div>
+            </div>
+            <div class="card__footer">
+                <div class="skeleton skeleton-text" style="width: 30%"></div>
+                <div class="skeleton skeleton-text" style="width: 20%"></div>
+            </div>
+        </div>
+    `).join("");
+
+
+    container.innerHTML = skeletonsHTML;
+
+}
+
+/**
+ * INICIALIZAR FILTROS DE ESTADO Y ETIQUETAS
+ *
  * @function initializeStatusFilters
  * @description Configura los filtros adicionales (destacados, nuevos, etc.)
  * @returns {void}
  */
 function initializeStatusFilters() {
-    const filterStatusContainer = document.querySelector(AppConfig.selectors.filterStatus);
+    const filterStatusContainer = document.querySelector(
+        AppConfig.selectors.filterStatus
+    );
 
     if (!filterStatusContainer) {
-        Logger.warn('Contenedor de filtros de estado no encontrado');
+        Logger.warn("Contenedor de filtros de estado no encontrado");
         return;
     }
 
@@ -483,7 +642,9 @@ function initializeStatusFilters() {
         <div class="filter-group">
             <h4 class="filter-group-title">Estado</h4>
             <div class="filter-options">
-                ${AppConfig.filters.statusOptions.map(filter => `
+                ${AppConfig.filters.statusOptions
+            .map(
+                (filter) => `
                     <label class="filter-checkbox">
                         <input type="checkbox"
                             value="${filter.id}"
@@ -493,14 +654,18 @@ function initializeStatusFilters() {
                             ${filter.name}
                         </span>
                     </label>
-                    `).join('')}
+                    `
+            )
+            .join("")}
             </div>
         </div>
         
         <div class="filter-group">
             <h4 class="filter-group-title">🏷️ Etiquetas</h4>
             <div class="filter-options">
-                ${AppConfig.filters.tagOptions.map(filter => `
+                ${AppConfig.filters.tagOptions
+            .map(
+                (filter) => `
                     <label class="filter-checkbox">
                         <input type="checkbox"
                             value="${filter.id}"
@@ -510,7 +675,9 @@ function initializeStatusFilters() {
                             ${filter.name}
                         </span>
                     </label>
-                    `).join('')}
+                    `
+            )
+            .join("")}
             </div>
         </div>
         
@@ -520,7 +687,7 @@ function initializeStatusFilters() {
                 <label class="filter-checkbox">
                     <input type="checkbox"
                         id="hide-out-of-stock"
-                        ${!FilterSystem.showOutOfStock ? 'checked' : ''}>
+                        ${!FilterSystem.showOutOfStock ? "checked" : ""}>
                     <span class="filter-label">
                         <span aria-hidden="true">✅</span>
                         Solo productos en stock
@@ -533,24 +700,28 @@ function initializeStatusFilters() {
     filterStatusContainer.innerHTML = statusFiltersHTML;
 
     // Event listenners para checkboxes
-    const checkboxes = filterStatusContainer.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', handleCheckboxFilterChange);
+    const checkboxes = filterStatusContainer.querySelectorAll(
+        'input[type="checkbox"]'
+    );
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", handleCheckboxFilterChange);
     });
 }
 
 /**
  * INICIALIZAR VISUALIZACIÓN DE FILTROS ACTIVOS
- * 
+ *
  * @function initializeActiveFiltersDisplay
  * @description Configura la visualización de filtros activos
  * @returns {void}
  */
 function initializeActiveFiltersDisplay() {
-    const clearFiltersBtn = document.querySelector(AppConfig.selectors.clearFilters);
+    const clearFiltersBtn = document.querySelector(
+        AppConfig.selectors.clearFilters
+    );
 
     if (clearFiltersBtn) {
-        clearFiltersBtn.addEventListener('click', handleClearAllFilters);
+        clearFiltersBtn.addEventListener("click", handleClearAllFilters);
     }
 
     // Actualizar visualización inicial
@@ -559,14 +730,14 @@ function initializeActiveFiltersDisplay() {
 
 /**
  * MANEJO DE CLIC EN FILTROS DE CATEGORÍA
- * 
+ *
  * @function handleCategoryFilterClick
  * @description Maneja el evento click en los botones de categoría
  * @param {Event} event - Evento click
  * @returns {void}
  */
 function handleCategoryFilterClick(event) {
-    const button = event.target.closest('.filter-btn');
+    const button = event.target.closest(".filter-btn");
     if (!button) return;
 
     const category = button.dataset.category;
@@ -585,7 +756,7 @@ function handleCategoryFilterClick(event) {
 
 /**
  * MANEJO DE CAMBIO DE CHECKBOXES DE FILTRO
- * 
+ *
  * @function handleCheckboxFilterChange
  * @description Maneja los cambios en los checkboxes de filtro
  * @param {Event} event - Evento change
@@ -603,7 +774,7 @@ function handleCheckboxFilterChange(event) {
         } else {
             FilterSystem.removeFilter(filterType, value);
         }
-    } else if (checkbox.id === 'hide-out-of-stock') {
+    } else if (checkbox.id === "hide-out-of-stock") {
         // Filtro de disponibilidad
         FilterSystem.showOutOfStock = !checkbox.checked;
     }
@@ -611,12 +782,15 @@ function handleCheckboxFilterChange(event) {
     applyAllFiltersAndRender();
     updateActiveFiltersDisplay();
 
-    Logger.info(`✅ Filtro ${checkbox.checked ? 'activado' : 'desactivado'}: ${value || 'stock'}`);
+    Logger.info(
+        `✅ Filtro ${checkbox.checked ? "activado" : "desactivado"}: ${value || "stock"
+        }`
+    );
 }
 
 /**
  * MANEJO DE LIMPIEZA DE TODOS LOS FILTROS
- * 
+ *
  * @function handleClearAllFilters
  * @description Limpia todos los filtros activos
  * @returns {void}
@@ -629,12 +803,12 @@ function handleClearAllFilters() {
     applyAllFiltersAndRender();
     updateActiveFiltersDisplay();
 
-    Logger.info('🗑️ Todos los filtros han sido limpiados');
+    Logger.info("🗑️ Todos los filtros han sido limpiados");
 }
 
 /**
  * APLICAR TODOS LOS FILTROS Y RENDERIZAR
- * 
+ *
  * @function applyAllFiltersAndRender
  * @description Aplica todos los filtros y actualiza la vista
  * @returns {void}
@@ -648,30 +822,34 @@ function applyAllFiltersAndRender() {
 
 /**
  * ACTUALIZAR ESTADÍSTICAS DE FILTROS
- * 
+ *
  * @function updateFilterStats
  * @description Actualiza el contador de filtros activos
  * @returns {void}
  */
 function updateFilterStats() {
     const filterStats = document.querySelector(AppConfig.selectors.filterStats);
-    const clearFiltersBtn = document.querySelector(AppConfig.selectors.clearFilters);
+    const clearFiltersBtn = document.querySelector(
+        AppConfig.selectors.clearFilters
+    );
     const filterStatsData = FilterSystem.getFilterStats();
 
     if (filterStats) {
-        filterStats.textContent = filterStatsData.total > 0 ?
-            `${filterStatsData.total} filtro(s) activo(s)` :
-            'Sin filtros activos';
+        filterStats.textContent =
+            filterStatsData.total > 0
+                ? `${filterStatsData.total} filtro(s) activo(s)`
+                : "Sin filtros activos";
     }
 
     if (clearFiltersBtn) {
-        clearFiltersBtn.style.display = filterStatsData.total > 0 ? 'block' : 'none';
+        clearFiltersBtn.style.display =
+            filterStatsData.total > 0 ? "block" : "none";
     }
 }
 
 /**
  * ACTUALIZAR BOTONES DE FILTRO DE CATEGORÍA
- * 
+ *
  * @function updateCategoryFilterButtons
  * @description Actualiza el estado visual de los botones de categoría
  * @param {HTMLElement} activeButton - Botón activo actualmente
@@ -680,51 +858,53 @@ function updateFilterStats() {
 function updateCategoryFilterButtons(activeButton) {
     const allButtons = document.querySelectorAll('[data-filter-type="category"]');
 
-    allButtons.forEach(button => {
+    allButtons.forEach((button) => {
         const isActive = button === activeButton;
         button.classList.toggle(AppConfig.classes.active, isActive);
-        button.setAttribute('aria-pressed', isActive.toString());
+        button.setAttribute("aria-pressed", isActive.toString());
     });
 }
 
 /**
  * RESETEAR INTERFAZ DE FILTROS
- * 
+ *
  * @function resetFilterUI
  * @description Restablece la interfaz de usuario de filtros a su estado inicial
  * @returns {void}
  */
 function resetFilterUI() {
     // Resetear botones de categoría
-    const categoryButtons = document.querySelectorAll('[data-filter-type="category"]');
-    categoryButtons.forEach(button => {
-        const isAll = button.dataset.category === 'all';
+    const categoryButtons = document.querySelectorAll(
+        '[data-filter-type="category"]'
+    );
+    categoryButtons.forEach((button) => {
+        const isAll = button.dataset.category === "all";
         button.classList.toggle(AppConfig.classes.active, isAll);
-        button.setAttribute('aria-pressed', isAll.toString());
+        button.setAttribute("aria-pressed", isAll.toString());
     });
 
     // Resetear checkboxes
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
+    checkboxes.forEach((checkbox) => {
         checkbox.checked = false;
     });
 
     // Resetear búsqueda
     const searchInput = document.querySelector(AppConfig.selectors.searchInput);
     if (searchInput) {
-        searchInput.value = '';
+        searchInput.value = "";
     }
 }
 
 /**
  * RENDERIZADO DE TODOS LOS PRODUCTOS
- * 
+ *
  * @function renderAllProducts
  * @description Renderiza todos los productos en la galería
  * @returns {void}
  */
 function renderAllProducts() {
-    Logger.info('Renderizando todos los productos...');
+    Logger.info("Renderizando todos los productos...");
     AppState.filteredProducts = [...AppState.products];
     renderFilteredProducts();
     updateStatistics();
@@ -732,7 +912,7 @@ function renderAllProducts() {
 
 /**
  * RENDERIZADO DE PRODUCTOS FILTRADOS
- * 
+ *
  * @function renderFilteredProducts
  * @description Renderiza los productos filtrados en la galería
  * @returns {void}
@@ -752,7 +932,7 @@ function renderFilteredProducts() {
         if (emptyState) {
             emptyState.classList.remove(AppConfig.classes.hidden);
         }
-        container.innerHTML = '';
+        container.innerHTML = "";
         return;
     }
 
@@ -762,15 +942,26 @@ function renderFilteredProducts() {
     }
 
     // Generar y renderizar tarjetas
-    const cardsHTML = AppState.filteredProducts.map(product => createProductCard(product)).join('');
-    container.innerHTML = cardsHTML;
+    const fragment = document.createDocumentFragment();
+    const tempContainer = document.createElement('div');
 
-    Logger.info(`${AppState.filteredProducts.length} productos renderizados`);
+    tempContainer.innerHTML = AppState.filteredProducts.map(product => createProductCard(product)).join("");
+
+    while (tempContainer.firstChild) {
+        fragment.appendChild(tempContainer.firstChild);
+    }
+
+    container.innerHTML = "";
+    container.appendChild(fragment);
+
+    PerformanceOptimizer.initLazyLoading();
+
+    Logger.info(`✅ ${AppState.filteredProducts.length} productos renderizados`);
 }
 
 /**
  * CREACIÓN DE TARJETA DE PRODUCTO
- * 
+ *
  * @function createProductCard
  * @description Crea el HTML para una tarjeta de producto
  * @param {Object} product - Datos del producto
@@ -794,26 +985,30 @@ function createProductCard(product) {
         : 0;
 
     const isOutOfStock = product.stock === 0;
+    const isNew = product.tags && product.tags.includes("nuevo");
 
     // Determinar clases CSS
     const cardClasses = [
         AppConfig.classes.card,
-        product.featured ? AppConfig.classes.featured : '',
-        isOutOfStock ? AppConfig.classes.outOfStock : ''
-    ].filter(Boolean).join(' ');
+        product.featured ? AppConfig.classes.featured : "",
+        isOutOfStock ? AppConfig.classes.outOfStock : ""
+    ].filter(Boolean).join(" ");
 
     return `
     <article class="${cardClasses}"
             data-category="${product.category}"
             data-id="${product.id}"
             aria-labelledby="product-title-${product.id}">
+
+            ${isNew ? '<span class="card__new-badge" aria-label="Producto nuevo">🆕 Nuevo</span>' : ""}
         
         <!-- Contenedor de imagen -->
         <div class="card__image-container">
-            <img src="${product.image}"
+            <img data-src="${product.image}"
                 alt="${product.title}"
-                class="card__image"
-                loading="lazy">
+                class="card__image loading"
+                loading="lazy"
+                decoding="async">
 
             <!-- Badge de categoría -->
             <span class="card__badge" aria-label="Categoría: ${product.category}">
@@ -825,7 +1020,7 @@ function createProductCard(product) {
                 <span class="card__discount" aria-label="Descuento del ${discountPercent}%">
                     -${discountPercent}%
                 </span>
-                ` : ''}
+                ` : ""}
         </div>
         
         <!-- Contenido de la tarjeta -->
@@ -856,16 +1051,16 @@ function createProductCard(product) {
                         <span class="card__original-price" aria-hidden="true">
                             €${product.originalPrice.toFixed(2)}
                         </span>
-                        ` : ''}
+                        ` : ""}
                         <span class="card__price" aria-label="Precio: €${product.price.toFixed(2)}">
                             €${product.price.toFixed(2)}
                         </span>
                 </div>
 
                 <div class="stock-info">
-                        <span class="stock-badge ${isOutOfStock ? 'out-of-stock' : 'in-stock'}">
-                            ${isOutOfStock ? '❌ Agotado' : `✅ ${product.stock} en stock`}
-                        </span>
+                    <span class="stock-badge ${isOutOfStock ? "out-of-stock" : "in-stock"}">
+                        ${isOutOfStock ? "❌ Agotado" : `✅ ${product.stock} en stock`}
+                    </span>
                 </div>
             </div>
         </article>
@@ -874,7 +1069,7 @@ function createProductCard(product) {
 
 /**
  * GENERACIÓN DE RATING CON ESTRELLAS
- * 
+ *
  * @function generateStarRating
  * @description Genera el HTML para mostrar el rating con estrellas
  * @param {number} rating - Calificación del producto (0-5)
@@ -885,35 +1080,41 @@ function generateStarRating(rating) {
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
-    return '⭐'.repeat(fullStars) +
-        (hasHalfStar ? '✨' : '') +
-        '☆'.repeat(emptyStars);
+    return (
+        "⭐".repeat(fullStars) + (hasHalfStar ? "✨" : "") + "☆".repeat(emptyStars)
+    );
 }
 
 /**
  * OBTENCIÓN DE ICONO DE CATEGORÍA
- * 
+ *
  * @function getCategoryIcon
  * @description Devuelve el icono correspondiente en una categoría
  * @param {string} category - ID de la categoría
  * @returns {string} Icono de la categoría
  */
 function getCategoryIcon(category) {
-    const categoryData = AppState.categories.find(cat => cat.id === category);
-    return categoryData?.icon || '📦';
+    const categoryData = AppState.categories.find((cat) => cat.id === category);
+    return categoryData?.icon || "📦";
 }
 
 /**
  * ACTUALIZACIÓN DE ESTADÍSTICAS
- * 
+ *
  * @function updateStatistics
  * @description Actualiza las estadísticas mostradas en la interfaz
  * @returns {void}
  */
 function updateStatistics() {
-    const totalElement = document.querySelector(AppConfig.selectors.totalProducts);
-    const visibleElement = document.querySelector(AppConfig.selectors.visibleProducts);
-    const summaryElement = document.querySelector(AppConfig.selectors.gallerySummary);
+    const totalElement = document.querySelector(
+        AppConfig.selectors.totalProducts
+    );
+    const visibleElement = document.querySelector(
+        AppConfig.selectors.visibleProducts
+    );
+    const summaryElement = document.querySelector(
+        AppConfig.selectors.gallerySummary
+    );
 
     if (totalElement) {
         totalElement.textContent = AppState.products.length;
@@ -933,13 +1134,15 @@ function updateStatistics() {
 
 /**
  * MOSTRAR ESTADO DE CARGA
- * 
+ *
  * @function showLoadingState
  * @description Muestra el estado de carga en la interfaz
  * @returns {void}
  */
 function showLoadingState() {
-    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
+    const loadingElement = document.querySelector(
+        AppConfig.selectors.loadingElement
+    );
     const emptyState = document.querySelector(AppConfig.selectors.emptyState);
 
     if (loadingElement) {
@@ -953,7 +1156,7 @@ function showLoadingState() {
 
 /**
  * MOSTRAR MENSAJES DE ERROR AL USUARIO
- * 
+ *
  * @function showErrorMessage
  * @description Muestra un mensaje de error en la interfaz de usuario
  * @param {string} message - Mensaje de error a mostrar
@@ -961,7 +1164,9 @@ function showLoadingState() {
  */
 function showErrorMessage(message) {
     const container = document.querySelector(AppConfig.selectors.cardContainer);
-    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
+    const loadingElement = document.querySelector(
+        AppConfig.selectors.loadingElement
+    );
 
     if (loadingElement) {
         loadingElement.classList.add(AppConfig.classes.hidden);
@@ -981,25 +1186,25 @@ function showErrorMessage(message) {
 
 /**
  * ACTUALIZAR VISUALIZACIÓN DE FILTROS ACTIVOS
- * 
+ *
  * @function updateActiveFiltersDisplay
  * @description Actualiza la visualización de filtros activos
  * @returns {void}
  */
 function updateActiveFiltersDisplay() {
     // Esta función se implementará en mejoras futuras
-    Logger.info('Actualizando visualización de filtros activos');
+    Logger.info("Actualizando visualización de filtros activos");
 }
 
 // EVENTO DE INICIALIZACIÓN CUANDO EL DOM ESTÁ LISTO
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener("DOMContentLoaded", initApp);
 
 // EXPORTACIÓN PARA USO EN MÓDULOS (futura escalabilidad)
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
     module.exports = {
         AppConfig,
         AppState,
         Logger,
-        initApp
+        initApp,
     };
 }

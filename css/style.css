@@ -1453,6 +1453,12 @@ filter-btn {
         will-change: tansform;
         contain: layout style paint;
     }
+
+    /* Optimizar imágenes en móviles
+    .card__image {
+        loading: lazy;
+        decoding: async;
+    } */
 }
 
 /* MEJORAS ESPECÍFICAS PARA TÁCTIL */
