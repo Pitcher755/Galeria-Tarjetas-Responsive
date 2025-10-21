@@ -42,7 +42,7 @@
     --nav-height: 80px;
 }
 
-/* RESET BÁSICO */
+/* RESET Y ESTILOS BASE */
 * {
     margin: 0;
     padding: 0;
@@ -521,7 +521,7 @@ a:focus-visible {
     color: #fbbf24;
 }
 
-/* BOTONES DE FOLTRO */
+/* BOTONES DE FILTRO */
 .filter-btn {
     /* PROPIEDADES FLEXIBLES */
     flex: 0 0 auto;
@@ -709,7 +709,7 @@ a:focus-visible {
     left: var(--space-sm);
     background: var(--primary-color);
     color: var(--white);
-    padding: var(--radius-sm);
+    padding: var(--radius-sm) var(--space-sm);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-sm);
     font-weight: 600;
@@ -826,7 +826,7 @@ a:focus-visible {
 }
 
 @keyframes fadeIn {
-    form {
+    from {
         opacity: 0;
         transform: scale(0.8);
     }
@@ -930,7 +930,7 @@ a:focus-visible {
     background: #fef2f2;
     border: 1px solid #fecaca;
     border-radius: var(--radius-lg);
-    margin: var(--space-lg);
+    margin: var(--space-lg) 0;
 }
 
 .error-message p {
@@ -962,4 +962,232 @@ a:focus-visible {
 .rating__text {
     color: var(--text-light);
     font-size: var(--font-size-sm);
+}
+
+/* CONTENEDOR DE FILTROS AVANZADOS */
+.filter-status {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow);
+}
+
+.filter-group {
+    margin-bottom: var(--space-lg);
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.filter-group-title {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+/* OPCIONES DE FILTRO */
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--accent-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.filter-checkbox:hover {
+    border-color: var(--primary-color);
+    background: var(--white);
+}
+
+.filter-checkbox input[type="checkbox"] {
+    margin: 0;
+}
+
+.filter-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+/* FILTROS ACTIVOS */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm);
+    background: var(--accent-color);
+    border-radius: var(--radius-md);
+    min-height: 50px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.filter-tag .remove-filter {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-tag .remove-filter:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ESTADÍSTICAS DE FILTROS */
+.filter-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--accent-color);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.clear-filters-btn {
+    background: var(--secondary-color);
+    color: var(--white);
+    border: none;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: background-color 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+    background: var(--text-light);
+}
+
+/* BÚSQUEDA MEJORADA */
+.search-group {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto var(--space-md);
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-input:not(:placeholder-shown) {
+    background: var(--accent-color);
+}
+
+/* ANIMACIONES DE FILTRADO */
+.card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card.filtering {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.card.filtered-out {
+    animation: fadeOutUp 0.3s ease-out forwards;
+}
+
+.card.filtered-in {
+    animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeOutUp {
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* RESPONSIVE PARA FILTROS */
+@media (max-width: 768px) {
+    .filter-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-checkbox {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .active-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-stats {
+        flex-direction: column;
+        gap: var(--space-sm);
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-status {
+        padding: var(--space-sm);
+    }
+
+    .filter-group-title {
+        font-size: var(--font-size-sm);
+    }
 }
