@@ -1,41 +1,28 @@
 /**
- * @file appConfig.js
- * @description Configuración global de la aplicación. Define rutas, selectores,
- *              clases CSS, endpoints y opciones de filtros. Esta configuración
- *              centralizada permite modificar parámetros globales sin alterar
- *              la lógica del resto de módulos.
- * @version 1.0.0
+ * CONFIGURACIÓN GLOBAL DE LA APLICACIÓN
  */
 
-/**
- * @namespace AppConfig
- * @property {boolean} debugMode - Activa o desactiva los logs en consola.
- * @property {Object} selectors - Selectores CSS globales utilizados por la app.
- * @property {Object} classes - Clases CSS clave utilizadas para el renderizado y estados.
- * @property {Object} filters - Define las opciones de filtros disponibles.
- * @property {Object} endpoints - Contiene las rutas de los recursos externos.
- */
 export const AppConfig = {
-    version: "1.0.0",
-    debugMode: true,
+    version: "1.0.0", // [3]
+    debugMode: true, // [3]
 
     selectors: {
-        cardContainer: "#card-container",
-        filtersContainer: "#filters-container",
+        cardContainer: "#card-container", // [3]
+        filtersContainer: "#filters-container", // [3]
         loadingElement: "#loading",
         emptyState: "#empty-state",
         resetFilters: "#reset-filters",
         totalProducts: "#total-products",
         visibleProducts: "#visible-products",
-        gallerySummary: "#gallery-summary",
+        gallerySummary: "#gallery-summary", // [3]
         searchInput: "#product-search",
         filterStatus: "#filter-status",
         clearFilters: "#clear-filters",
-        filterStats: "#filter-stats",
+        filterStats: "#filter-stats", // [4]
     },
 
     classes: {
-        hidden: "hidden",
+        hidden: "hidden", // [4]
         active: "active",
         card: "card",
         filterBtn: "filter-btn",
@@ -43,7 +30,7 @@ export const AppConfig = {
         outOfStock: "card--out-of-stock",
         filterActive: "filter-active",
         filterTag: "filter-tag",
-        filterCount: "filter-count",
+        filterCount: "filter-count", // [4]
     },
 
     filters: {
@@ -51,15 +38,15 @@ export const AppConfig = {
             { id: "featured", name: "Destacados", icon: "⭐" },
             { id: "new", name: "Nuevos", icon: "🆕" },
             { id: "discount", name: "En oferta", icon: "💸" },
-        ],
+        ], // [4]
         tagOptions: [
             { id: "popular", name: "Populares", icon: "🔥" },
             { id: "nuevo", name: "Nuevo", icon: "🎉" },
             { id: "oferta", name: "Oferta", icon: "💰" },
-        ],
+        ], // [5]
     },
 
     endpoints: {
-        products: "./data/cards.json",
+        products: "./data/cards.json", // [5]
     },
 };
