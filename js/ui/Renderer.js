@@ -58,45 +58,107 @@ export function renderFilteredProducts() {
 
 /**
  * CREACIÓN DE TARJETA DE PRODUCTO
+ *
+ * @function createProductCard
+ * @description Crea el HTML para una tarjeta de producto
+ * @param {Object} product - Datos del producto
+ * @param {number} product.id - ID único del producto
+ * @param {string} product.title - Título del producto
+ * @param {string} product.category - Categoría del producto
+ * @param {number} product.price - Precio actual
+ * @param {number} [product.originalPrice] - Precio original
+ * @param {string} product.description - Descripción del producto
+ * @param {string} product.image - URL de la imagen
+ * @param {number} product.rating - Calificación del producto
+ * @param {number} product.reviewCount - Número de reseñas
+ * @param {number} product.stock - Cantidad en stock
+ * @param {boolean} product.featured - Si es producto destacado
+ * @returns {string} HTML de la tarjeta
  */
-export function createProductCard(product) {
-    const hasDiscount = product.originalPrice && product.originalPrice > product.price; // [36]
+function createProductCard(product) {
+    const hasDiscount = product.originalPrice && product.originalPrice > product.price;
     const discountPercent = hasDiscount
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-        : 0; // [36, 37]
+        : 0;
+
     const isOutOfStock = product.stock === 0;
-    const isNew = product.tags && product.tags.includes("nuevo"); // [37]
+    const isNew = product.tags && product.tags.includes("nuevo");
 
     // Determinar clases CSS
     const cardClasses = [
         AppConfig.classes.card,
         product.featured ? AppConfig.classes.featured : "",
         isOutOfStock ? AppConfig.classes.outOfStock : ""
-    ].filter(Boolean).join(" "); // [37]
+    ].filter(Boolean).join(" ");
 
-    // Retorna el HTML de la tarjeta [37, 38]
     return `
-        <article class="${cardClasses}" data-category="${product.category}" data-id="${product.id}" aria-labelledby="product-title-${product.id}">
-            ${isNew ? '<span class="card__tag--new">🆕 Nuevo</span>' : ""}
-            <div class="card__image-wrapper">
-                <img src="./assets/placeholder.jpg" data-src="${product.image}" alt="${product.title}" class="card__image loading" loading="lazy" decoding="async">
-            </div>
-            <div class="card__category-icon">
+    <article class="${cardClasses}"
+            data-category="${product.category}"
+            data-id="${product.id}"
+            aria-labelledby="product-title-${product.id}">
+
+            ${isNew ? '<span class="card__new-badge" aria-label="Producto nuevo">🆕 Nuevo</span>' : ""}
+        
+        <!-- Contenedor de imagen -->
+        <div class="card__image-container">
+            <img data-src="${product.image}"
+                alt="${product.title}"
+                class="card__image loading"
+                loading="lazy"
+                decoding="async">
+
+            <!-- Badge de categoría -->
+            <span class="card__badge" aria-label="Categoría: ${product.category}">
                 ${getCategoryIcon(product.category)}
+            </span>
+
+            <!-- Badge de descuento -->
+            ${hasDiscount ? `
+                <span class="card__discount" aria-label="Descuento del ${discountPercent}%">
+                    -${discountPercent}%
+                </span>
+                ` : ""}
+        </div>
+        
+        <!-- Contenido de la tarjeta -->
+        <div class="card__content">
+            <h3 class="card__title" id="product-title-${product.id}">
+                ${product.title}
+            </h3>
+
+            <p class="card__description">
+                ${product.description}
+            </p>
+
+            <!-- Rating -->
+            <div class="card__rating" aria-label="Calificación: ${product.rating} de 5 estrellas">
+                <span class="rating__stars" aria-hidden="true">
+                    ${generateStarRating(product.rating)}
+                </span>
+                <span class="rating__text">
+                    ${product.rating} (${product.reviewCount} reseñas)
+                </span>
             </div>
-            ${hasDiscount ? `<span class="card__discount">-${discountPercent}%</span>` : ""}
-            <h3 id="product-title-${product.id}" class="card__title">${product.title}</h3>
-            <p class="card__description">${product.description}</p>
-            <div class="card__rating" aria-label="Calificación de ${product.rating} estrellas">
-                <span class="card__stars">${generateStarRating(product.rating)}</span>
-                <span class="card__review-count">${product.rating} (${product.reviewCount} reseñas)</span>
-            </div>
-            <div class="card__pricing">
-                ${hasDiscount ? `<span class="card__price--original">€${product.originalPrice.toFixed(2)}</span>` : ""}
-                <span class="card__price">€${product.price.toFixed(2)}</span>
-            </div>
-            <div class="card__stock">
-                ${isOutOfStock ? "❌ Agotado" : `✅ ${product.stock} en stock`}
+        </div>
+        
+        <!-- Pie de tarjeta -->
+        <div class="card__footer">
+                <div class="price-container">
+                    ${hasDiscount ? `
+                        <span class="card__original-price" aria-hidden="true">
+                            €${product.originalPrice.toFixed(2)}
+                        </span>
+                        ` : ""}
+                        <span class="card__price" aria-label="Precio: €${product.price.toFixed(2)}">
+                            €${product.price.toFixed(2)}
+                        </span>
+                </div>
+
+                <div class="stock-info">
+                    <span class="stock-badge ${isOutOfStock ? "out-of-stock" : "in-stock"}">
+                        ${isOutOfStock ? "❌ Agotado" : `✅ ${product.stock} en stock`}
+                    </span>
+                </div>
             </div>
         </article>
     `;
@@ -104,22 +166,33 @@ export function createProductCard(product) {
 
 /**
  * GENERACIÓN DE RATING CON ESTRELLAS
+ *
+ * @function generateStarRating
+ * @description Genera el HTML para mostrar el rating con estrellas
+ * @param {number} rating - Calificación del producto (0-5)
+ * @returns {string} HTML de las estrellas
  */
-export function generateStarRating(rating) {
+function generateStarRating(rating) {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
     return (
         "⭐".repeat(fullStars) + (hasHalfStar ? "✨" : "") + "☆".repeat(emptyStars)
-    ); // [39]
+    );
 }
 
 /**
  * OBTENCIÓN DE ICONO DE CATEGORÍA
+ *
+ * @function getCategoryIcon
+ * @description Devuelve el icono correspondiente en una categoría
+ * @param {string} category - ID de la categoría
+ * @returns {string} Icono de la categoría
  */
-export function getCategoryIcon(category) {
+function getCategoryIcon(category) {
     const categoryData = AppState.categories.find((cat) => cat.id === category);
-    return categoryData?.icon || "📦"; // [40]
+    return categoryData?.icon || "📦";
 }
 
 /**
@@ -130,11 +203,16 @@ export function showSkeletonLoading() {
     if (!container) return; // [41]
     const skeletonCount = 8;
     const skeletonsHTML = Array.from({ length: skeletonCount }, () => `
-        <div class="card skeleton">
-            <div class="skeleton__image"></div>
-            <div class="skeleton__title"></div>
-            <div class="skeleton__text"></div>
-            <div class="skeleton__price"></div>
+        <div class="card__image-container skeleton skeleton-image"></div>
+            <div class="card__content">
+                <div class="skeleton skeleton-text skeleton-text--short"></div>
+                <div class="skeleton skeleton-text skeleton-text--medium"></div>
+                <div class="skeleton skeleton-text" style=width: 40%></div>
+            </div>
+            <div class="card__footer">
+                <div class="skeleton skeleton-text" style="width: 30%"></div>
+                <div class="skeleton skeleton-text" style="width: 20%"></div>
+            </div>
         </div>
     `).join(""); // [42]
     container.innerHTML = skeletonsHTML;

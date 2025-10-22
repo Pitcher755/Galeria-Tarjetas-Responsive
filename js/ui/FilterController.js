@@ -10,7 +10,7 @@ import * as UIUpdates from './UIUpdates.js';
  * @param {Function} applyAllFiltersAndRender - Función de orquestación del renderizado
  */
 export function initializeFilters(applyAllFiltersAndRender) {
-    Logger.info("Inicializando sistema de filtros..."); // [30]
+    Logger.info("Inicializando sistema de filtros...");
     initializeCategoryFilters(applyAllFiltersAndRender);
     initializeSearchFilter(applyAllFiltersAndRender);
     initializeStatusFilters(applyAllFiltersAndRender);
@@ -34,13 +34,14 @@ export function initializeCategoryFilters(applyAllFiltersAndRender) {
     // Generación de HTML para los botones de categoría [51, 52]
     const filterButtonHTML = AppState.categories.map(
         (category) => `
-            <button class="${AppConfig.classes.filterBtn} ${category.id === "all" ? AppConfig.classes.active : ""}"
-                    data-category="${category.id}"
-                    data-filter-type="category"
-                    aria-pressed="${category.id === "all" ? "true" : "false"}">
-                ${category.icon}
-                ${category.name}
-            </button>
+            <button class="filter-btn ${category.id === "all" ? AppConfig.classes.active : ""
+            }"
+                data-category="${category.id}"
+                data-filter-type="category"
+                aria-pressed="${category.id === "all" ? "true" : "false"}">
+            <span aria-hidden="true">${category.icon}</span>
+            ${category.name}
+        </button>
         `
     ).join("");
 
@@ -97,7 +98,62 @@ export function initializeStatusFilters(applyAllFiltersAndRender) {
         handleCheckboxFilterChange(event, applyAllFiltersAndRender); // Envoltura del handler
 
     // Creación de HTML de checkboxes [54, 55]
-    const statusFiltersHTML = `... (HTML de filtros de estado, etiquetas y stock) ...`;
+    const statusFiltersHTML = `<div class="filter-group">
+            <h4 class="filter-group-title">Estado</h4>
+            <div class="filter-options">
+                ${AppConfig.filters.statusOptions
+            .map(
+                (filter) => `
+                    <label class="filter-checkbox">
+                        <input type="checkbox"
+                            value="${filter.id}"
+                            data-filter-type="status">
+                        <span class="filter-label">
+                            <span aria-hidden="true">${filter.icon}</span>
+                            ${filter.name}
+                        </span>
+                    </label>
+                    `
+            )
+            .join("")}
+            </div>
+        </div>
+        
+        <div class="filter-group">
+            <h4 class="filter-group-title">🏷️ Etiquetas</h4>
+            <div class="filter-options">
+                ${AppConfig.filters.tagOptions
+            .map(
+                (filter) => `
+                    <label class="filter-checkbox">
+                        <input type="checkbox"
+                            value="${filter.id}"
+                            data-filter-type="tags">
+                        <span class="filter-label">
+                            <span aria-hidden="true">${filter.icon}</span>
+                            ${filter.name}
+                        </span>
+                    </label>
+                    `
+            )
+            .join("")}
+            </div>
+        </div>
+        
+        <div class="filter-group">
+            <h4 class="filter-group-title">📦 Disponibilidad</h4>
+            <div class="filter-options">
+                <label class="filter-checkbox">
+                    <input type="checkbox"
+                        id="hide-out-of-stock"
+                        ${!FilterSystem.showOutOfStock ? "checked" : ""}>
+                    <span class="filter-label">
+                        <span aria-hidden="true">✅</span>
+                        Solo productos en stock
+                    </span>
+                </label>
+            </div>
+        </div>`;
     filterStatusContainer.innerHTML = statusFiltersHTML;
 
     // Event listenners para checkboxes
