@@ -1,15 +1,27 @@
 {
-    "version": "1.0.0",
-    "lastUpdated": "2025-10-19",
+    "version": "2.0.0",
+    "lastUpdated": "2025-10-22",
+    "apiVersion": "v1",
+    "metadata": {
+        "totalProducts": 8,
+        "totalCategories": 6,
+        "generatedBy": "mock-api-service"
+    },
     "products": [
         {
             "id": 1,
+            "sku": "PROD-001",
             "title": "Smartphone Galaxy X",
             "category": "electronica",
             "price": 699.99,
             "originalPrice": 799.99,
+            "currency": "EUR",
             "description": "El último smartphone con pantalla AMOLED de 6.7 pulgadas, triple cámara de 108MP y batería de 5000mAh.",
             "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
+                "https://images.unsplash.com/photo-1510557880182-3eec1c7b1d0e?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "nuevo",
                 "popular",
@@ -18,15 +30,29 @@
             "rating": 4.5,
             "reviewCount": 128,
             "stock": 15,
-            "featured": true
+            "featured": true,
+            "createdAt": "2025-10-15T10:00:00Z",
+            "updatedAt": "2025-10-19T18:30:00Z",
+            "specifications": {
+                "pantalla": "6.7'' AMOLED",
+                "camara": "108MP + 12MP + 8MP",
+                "bateria": "5000mAh",
+                "almacenamiento": "128GB"
+            }
         },
         {
             "id": 2,
+            "sku": "PROD-002",
             "title": "Laptop Pro Ultra",
             "category": "electronica",
             "price": 1299.99,
+            "currency": "EUR",
             "description": "Laptop profesional con procesador i7, 16GB RAM, SSD 512GB y pantalla 4K de 15.6 pulgadas.",
             "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
+                "https://images.unsplash.com/photo-1508873699372-7aeab60b44a7?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "profesional",
                 "potente"
@@ -34,16 +60,29 @@
             "rating": 4.8,
             "reviewCount": 89,
             "stock": 8,
-            "featured": false
+            "featured": false,
+            "createdAt": "2025-10-10T09:15:00Z",
+            "updatedAt": "2025-10-18T16:45:00Z",
+            "specifications": {
+                "procesador": "Intel i7",
+                "ram": "16GB",
+                "almacenamiento": "512GB SSD",
+                "pantalla": "15.6'' 4K"
+            }
         },
         {
             "id": 3,
+            "sku": "PROD-003",
             "title": "Auriculares Bluetooth",
             "category": "accesorios",
             "price": 149.99,
             "originalPrice": 199.99,
+            "currency": "EUR",
             "description": "Auriculares inalámbricos con cancelación de ruido activa y 30 horas de batería.",
             "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "inalámbrico",
                 "oferta"
@@ -51,15 +90,28 @@
             "rating": 4.3,
             "reviewCount": 256,
             "stock": 0,
-            "featured": false
+            "featured": false,
+            "createdAt": "2025-10-12T08:00:00Z",
+            "updatedAt": "2025-10-19T15:00:00Z",
+            "specifications": {
+                "tipo": "Over-ear",
+                "conexion": "Bluetooth 5.0",
+                "autonomia": "30h",
+                "cancelacionRuido": "Sí"
+            }
         },
         {
             "id": 4,
+            "sku": "PROD-004",
             "title": "Camiseta Básica",
             "category": "ropa",
             "price": 19.99,
+            "currency": "EUR",
             "description": "Camiseta de algodón 100% en varios colores. Corte regular y calidad premium.",
             "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "básico",
                 "algodón"
@@ -67,15 +119,27 @@
             "rating": 4.2,
             "reviewCount": 342,
             "stock": 45,
-            "featured": false
+            "featured": false,
+            "createdAt": "2025-10-09T12:00:00Z",
+            "updatedAt": "2025-10-17T09:30:00Z",
+            "specifications": {
+                "material": "Algodón 100%",
+                "corte": "Regular fit",
+                "colores": "Negro, blanco, gris"
+            }
         },
         {
             "id": 5,
+            "sku": "PROD-005",
             "title": "Zapatillas Running",
             "category": "deportes",
             "price": 89.99,
+            "currency": "EUR",
             "description": "Zapatillas deportivas ideales para running con tecnología de amortiguación avanzada.",
             "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "deporte",
                 "running"
@@ -83,15 +147,27 @@
             "rating": 4.6,
             "reviewCount": 167,
             "stock": 22,
-            "featured": true
+            "featured": true,
+            "createdAt": "2025-10-14T10:30:00Z",
+            "updatedAt": "2025-10-19T20:45:00Z",
+            "specifications": {
+                "uso": "Running",
+                "material": "Malla transpirable",
+                "suela": "Amortiguación AirFlow"
+            }
         },
         {
             "id": 6,
+            "sku": "PROD-006",
             "title": "Libro de Programación",
             "category": "libros",
             "price": 34.99,
+            "currency": "EUR",
             "description": "Guía completa de JavaScript moderno con ejemplos prácticos y proyectos reales.",
             "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "educación",
                 "tecnología"
@@ -99,15 +175,27 @@
             "rating": 4.7,
             "reviewCount": 78,
             "stock": 12,
-            "featured": false
+            "featured": false,
+            "createdAt": "2025-10-13T11:00:00Z",
+            "updatedAt": "2025-10-20T11:15:00Z",
+            "specifications": {
+                "autor": "J. Fernández",
+                "paginas": 420,
+                "editorial": "CodePress"
+            }
         },
         {
             "id": 7,
+            "sku": "PROD-007",
             "title": "Tablet Drawing Pro",
             "category": "electronica",
             "price": 449.99,
+            "currency": "EUR",
             "description": "Tablet para diseñadores con lápiz digital de precisión y pantalla táctil de 10.5 pulgadas.",
             "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "diseño",
                 "creativo"
@@ -115,15 +203,27 @@
             "rating": 4.4,
             "reviewCount": 56,
             "stock": 6,
-            "featured": false
+            "featured": false,
+            "createdAt": "2025-10-08T10:00:00Z",
+            "updatedAt": "2025-10-18T10:00:00Z",
+            "specifications": {
+                "pantalla": "10.5'' táctil",
+                "lapiz": "Incluido",
+                "almacenamiento": "64GB"
+            }
         },
         {
             "id": 8,
+            "sku": "PROD-008",
             "title": "Mochila Impermeable",
             "category": "accesorios",
             "price": 59.99,
+            "currency": "EUR",
             "description": "Mochila resistente al agua con compartimento para laptop de hasta 15 pulgadas.",
             "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop",
+            "images": [
+                "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop"
+            ],
             "tags": [
                 "práctica",
                 "resistente"
@@ -131,7 +231,14 @@
             "rating": 4.1,
             "reviewCount": 203,
             "stock": 18,
-            "featured": false
+            "featured": false,
+            "createdAt": "2025-10-11T09:45:00Z",
+            "updatedAt": "2025-10-20T09:00:00Z",
+            "specifications": {
+                "capacidad": "25L",
+                "impermeable": "Sí",
+                "compartimentoLaptop": "15''"
+            }
         }
     ],
     "categories": [
@@ -139,37 +246,91 @@
             "id": "all",
             "name": "Todos los Productos",
             "icon": "🌐",
-            "description": "Muestra todos los productos disponibles"
+            "description": "Muestra todos los productos disponibles",
+            "productCount": 8,
+            "sortOrder": 0
         },
         {
             "id": "electronica",
             "name": "Electrónica",
             "icon": "📱",
-            "description": "Dispositivos electrónicos y tecnológicos"
+            "description": "Dispositivos electrónicos y tecnológicos",
+            "productCount": 3,
+            "sortOrder": 1
         },
         {
             "id": "accesorios",
             "name": "Accesorios",
             "icon": "🎧",
-            "description": "Complementos y accesorios tecnológicos"
+            "description": "Complementos y accesorios tecnológicos",
+            "productCount": 2,
+            "sortOrder": 2
         },
         {
             "id": "ropa",
             "name": "Ropa",
             "icon": "👕",
-            "description": "Prendas de vestir y moda"
+            "description": "Prendas de vestir y moda",
+            "productCount": 1,
+            "sortOrder": 3
         },
         {
             "id": "deportes",
             "name": "Deportes",
             "icon": "⚽",
-            "description": "Artículos deportivos y fitness"
+            "description": "Artículos deportivos y fitness",
+            "productCount": 1,
+            "sortOrder": 4
         },
         {
             "id": "libros",
             "name": "Libros",
             "icon": "📚",
-            "description": "Libros educativos y de entretenimiento"
+            "description": "Libros educativos y de entretenimiento",
+            "productCount": 1,
+            "sortOrder": 5
         }
-    ]
+    ],
+    "filters": {
+        "status": [
+            {
+                "id": "featured",
+                "name": "Destacados",
+                "icon": "⭐",
+                "count": 2
+            },
+            {
+                "id": "available",
+                "name": "En stock",
+                "icon": "📦",
+                "count": 7
+            },
+            {
+                "id": "outofstock",
+                "name": "Sin stock",
+                "icon": "🚫",
+                "count": 1
+            }
+        ],
+        "tags": [
+            {
+                "id": "popular",
+                "name": "Populares",
+                "icon": "🔥",
+                "count": 3
+            },
+            {
+                "id": "oferta",
+                "name": "En Oferta",
+                "icon": "💸",
+                "count": 2
+            },
+            {
+                "id": "nuevo",
+                "name": "Nuevos",
+                "icon": "🆕",
+                "count": 1
+            }
+        ]
+    }
 }
