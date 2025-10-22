@@ -1,24 +1,21 @@
 /**
- * SERVICIO DE API PARA GALERÍA DE PRODUCTOS
- * 
- * @file api-service.js
- * @description Servicio para manejar todas las comunicaciones con el backend
+ * @file apiService.js
+ * @description Servicio para manejar todas las comunicaciones con el backend,
+ *              incluyendo soporte para mocks y manejo de errores.
  * @version 1.0.0
  * @author PitcherDev
- * 
- * @namespace ApiService
  */
 
+import { AppConfig } from '../config/appConfig.js';
+import { Logger } from '../core/logger.js';
+import { AppState } from '../core/state.js';
+
 /**
- * CONFIGURACIÓN DEL SERVICIO DE API
+ * Configuración principal de la API
  * @type {Object}
- * @property {string} baseURL - URL base de la API
- * @property {number} timeout - Timeout para requests (ms)
- * @property {Object} endpoints - Endpoints de la API
- * @property {Object} headers - Headers por defecto
  */
 const ApiConfig = {
-    baseURL: 'https://api.tutienda.com/v1', // ✅ URL de producción
+    baseURL: 'https://api.tutienda.com/v1',
     timeout: 10000,
     endpoints: {
         products: '/products',
@@ -33,32 +30,32 @@ const ApiConfig = {
 };
 
 /**
- * CONFIGURACIÓN PARA DESARROLLO (MOCK)
+ * Configuración de desarrollo con mocks
  * @type {Object}
  */
 const MockConfig = {
-    enabled: true, // ✅ Cambiar a false en producción
-    delay: 300, // Simular latencia de red
-    failRate: 0.1 // % de requests que fallan (para testing)
+    enabled: true,   // Cambiar a false en producción
+    delay: 300,      // Latencia simulada
+    failRate: 0.1    // % de requests que fallan
 };
 
 /**
- * SERVICIO PRINCIPAL DE API
- * @type {Object}
+ * Servicio de API
+ * @namespace ApiService
  */
-const ApiService = {
+export const ApiService = {
+
     /**
-     * REALIZAR PETICIÓN HTTP
-     * @param {string} url - URL del endpoint
-     * @param {Object} options - Opciones de fetch
+     * Realiza una petición HTTP
+     * @param {string} url - URL completa o endpoint
+     * @param {Object} [options={}] - Opciones de fetch
      * @returns {Promise<Object>} Respuesta de la API
      */
     async request(url, options = {}) {
         const startTime = Date.now();
 
         try {
-            // ✅ Usar mock en desarrollo si está habilitado
-            if (MockConfig.enabled && !url.includes('http')) {
+            if (MockConfig.enabled && !url.startsWith('http')) {
                 return await this.mockRequest(url, options);
             }
 
@@ -79,10 +76,9 @@ const ApiService = {
 
             const data = await response.json();
             const duration = Date.now() - startTime;
-
             Logger.info(`🌐 API Request: ${url} (${duration}ms)`);
-            return data;
 
+            return data;
         } catch (error) {
             Logger.error(`❌ API Error: ${url}`, error);
             throw this.handleError(error);
@@ -90,16 +86,14 @@ const ApiService = {
     },
 
     /**
-     * SIMULAR PETICIÓN PARA DESARROLLO
+     * Simula una petición para desarrollo
      * @param {string} endpoint - Endpoint a simular
      * @param {Object} options - Opciones de la petición
-     * @returns {Promise<Object>} Datos mock
+     * @returns {Promise<Object>} Datos simulados
      */
     async mockRequest(endpoint, options = {}) {
-        // Simular latencia de red
         await new Promise(resolve => setTimeout(resolve, MockConfig.delay));
 
-        // Simular fallos aleatorios para testing
         if (Math.random() < MockConfig.failRate) {
             throw new Error('Mock API Error: Simulated network failure');
         }
@@ -121,33 +115,20 @@ const ApiService = {
         }
     },
 
-    /**
-     * OBTENER PRODUCTOS DESDE API
-     * @param {Object} params - Parámetros de filtrado
-     * @returns {Promise<Array>} Lista de productos
-     */
+    /** Obtiene productos desde la API */
     async getProducts(params = {}) {
         const queryString = new URLSearchParams(params).toString();
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.products}?${queryString}`;
-
         return await this.request(url);
     },
 
-    /**
-     * OBTENER CATEGORÍAS DESDE API
-     * @returns {Promise<Array>} Lista de categorías
-     */
+    /** Obtiene categorías desde la API */
     async getCategories() {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.categories}`;
         return await this.request(url);
     },
 
-    /**
-     * BUSCAR PRODUCTOS
-     * @param {string} query - Término de búsqueda
-     * @param {Object} filters - Filtros adicionales
-     * @returns {Promise<Array>} Productos encontrados
-     */
+    /** Buscar productos con query y filtros */
     async searchProducts(query, filters = {}) {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.search}`;
         return await this.request(url, {
@@ -156,17 +137,14 @@ const ApiService = {
         });
     },
 
-    /**
-     * OBTENER OPCIONES DE FILTRO
-     * @returns {Promise<Object>} Opciones de filtrado disponibles
-     */
+    /** Obtiene opciones de filtros */
     async getFilterOptions() {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.filters}`;
         return await this.request(url);
     },
 
     /**
-     * MANEJO DE ERRORES DE API
+     * Manejo de errores formateados
      * @param {Error} error - Error original
      * @returns {Error} Error formateado
      */
@@ -174,21 +152,17 @@ const ApiService = {
         if (error.name === 'AbortError') {
             return new Error('Request timeout: La conexión tardó demasiado tiempo');
         }
-
         if (error.message.includes('Failed to fetch')) {
             return new Error('Error de conexión: Verifica tu conexión a internet');
         }
-
         return error;
     },
 
-    /**
-     * DATOS MOCK PARA DESARROLLO
-     */
+    /** Datos mock para desarrollo */
     getMockProducts() {
         return {
             success: true,
-            data: AppState.products, // Usar datos existentes
+            data: AppState.products,
             pagination: {
                 total: AppState.products.length,
                 page: 1,
