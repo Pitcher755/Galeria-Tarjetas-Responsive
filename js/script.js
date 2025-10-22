@@ -465,32 +465,110 @@ async function loadProductData() {
     Logger.info("📥 Cargando datos de productos...");
 
     try {
-        const response = await fetch(AppConfig.endpoints.products);
+        let productsData, categoriesData;
 
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
+        if (!MockConfig.enabled) {
+            // Modo producción: cargar desde API real
+            const [productsResponse, categoriesResponse] = await Promise.all([
+                AppService.getProducts(),
+                ApiService.getCategories(),
+            ]);
+
+            productsData = productsResponse.data;
+            categoriesData = categoriesResponse.data;
+        } else {
+            // Modo desarrollo: usar datos locales como fallback
+            Logger.info('Modo desarrollo: usando datos locales');
+            const response = await fetch(AppConfig.endpoints.products);
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            const localData = await response.json();
+            productsData = localData.products;
+            categoriesData = localData.categories;
         }
 
-        const data = await response.json();
-
         // Validar estructura de datos
-        if (!data.products || !Array.isArray(data.products)) {
-            throw new Error(`Estructura de datos inválida`);
+        if (!productsData || !Array.isArray(productsData)) {
+            throw new Error(`Estructura de datos inválida desde la API`);
         }
 
         // Actualizar estado global
-        AppState.products = data.products;
-        AppState.categories = data.categories || [];
-        AppState.filteredProducts = [...data.products];
+        AppState.products = productsData;
+        AppState.categories = categoriesData || [];
+        AppState.filteredProducts = [...productsData];
 
         Logger.info(`${data.products.length} productos cargados correctamente`);
         Logger.info(`${data.categories?.length || 0} categorías cargadas`);
     } catch (error) {
         Logger.error("Error cargando datos de productos:", error);
-        throw new Error(
-            "No se pudieron cargar los productos. Verifica la conexión."
-        );
+
+        await loadFallbackData();
     }
+}
+
+/**
+ * CARGAR DATOS DE FALLBACK
+ * @returns {Promise<void>}
+ */
+async function loadFallbackData() {
+    try {
+        Logger.info('🛡️ Intentando cargar datos de fallback...');
+
+        const response = await fetch(AppConfig.endpoints.products);
+
+        if (!response.ok) {
+            throw new Error('Fallback también falló');
+        }
+
+        const data = await response.json();
+
+        if (!data.products || !Array.isArray(data.products)) {
+            throw new Error('Datos de fallback inválidos');
+        }
+
+        AppState.products = data.products;
+        AppState.categories = data.categories || [];
+        AppState.filteredProducts = [...data.products];
+
+        Logger.info(`🛡️ ${data.products.length} productos cargados desde fallback`);
+
+    } catch (fallbackError) {
+        Logger.error('❌ Error crítico: Fallback también falló', fallbackError);
+        throw new Error('No se pudieron cargar los productos. Verifica tu conexión y recarga la página.');
+    }
+}
+
+// Función para manejo de estado de conexión
+function updateConnectionStatus(isOnline) {
+    const statusElement = document.getElementById('connection-status');
+
+    if (!statusElement) return;
+
+    if (isOnline) {
+        statusElement.textContent = '✅ Conectado';
+        statusElement.className = 'connection-status online';
+    } else {
+        statusElement.textContent = '⚠️ Sin conexión - Modo offline';
+        statusElement.className = 'connection-status offline';
+    }
+}
+
+// Listeners para estado de conexión
+function initializeConnectionMonitor() {
+    window.addEventListener('online', () => {
+        Logger.info('🌐 Conexión restaurada');
+        updateConnectionStatus(true);
+    });
+
+    window.addEventListener('offline', () => {
+        Logger.warn('🌐 Sin conexión - Modo offline activado');
+        updateConnectionStatus(false);
+    });
+
+    // Estado inicial
+    updateConnectionStatus(navigator.onLine);
 }
 
 /**
