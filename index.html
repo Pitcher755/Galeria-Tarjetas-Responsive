@@ -1,50 +1,157 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="no-js">
 
 <head>
+    <!-- METADATOS ESENCIALES -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="Width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galería de productos responsive con filtrado dinámico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO y Accesibilidad -->
+    <meta name="description"
+        content="Galería de productos responsive con filtrado dinámico. Explora nuestra colección de manera responsive y accesible.">
+    <meta name="keywords" content="productos, galería, filtrado, responsive, accesibilidad">
+    <meta name="author" content="PitcherDev">
+
+    <!-- PRELOAD -->
+    <link rel="preload" href="./css/main.css" as="style">
+    <link rel="modulepreload" href="./js/app.js">
+
+    <!-- ESTILOS -->
+    <link rel="stylesheet" href="./css/main.css">
+
+    <!-- Favicon y Open Graph -->
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg">
+    <meta property="og:title" content="Galería Interactiva">
+    <meta property="og:description" content="Explora productos con nuestra galería responsive y accesible">
+    <meta property="og:type" content="website">
+
     <title>Galería Interactiva de Productos</title>
-    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- SCRIPT PARA DETECCIÓN DE JAVASCRIPT -->
+    <script>
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+    </script>
 </head>
 
 <body>
-    <!-- Cabecera principal con título y filtros -->
-    <header class="header" role="banner" aria-label="Cabecera principal">
-        <div class="container">
-            <h1 class="header_title">Galería de Productos</h1>
-            <p class="header_subtitle">Filtra y explora nuestra colección</p>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
-            <!-- Controles de filtrado -->
-            <nav class="filters" role="navigation" aria-label="Filtros de productos">
-                <div class="filters_container" id="filters-container">
-                    <!-- Los botones se generan dinámicamente con JavaScript -->
-                </div>
-            </nav>
+    <!-- CABECERA -->
+    <header class="header" role="banner" aria-label="Cabecera principal del sitio">
+        <div class="container">
+            <div class="header__brand">
+                <h1 class="header__title"><span aria-hidden="true">🛍️</span> Galería Interactiva de Productos</h1>
+                <p class="header__subtitle">Explora, filtra y descubre nuestra colección</p>
+            </div>
+            <div class="header__stats" aria-live="polite" aria-atomic="true">
+                <span class="stats__item"><strong id="total-products">0</strong> productos</span>
+                <span class="stats__item"><strong id="visible-products">0</strong> visibles</span>
+            </div>
         </div>
     </header>
 
-    <!-- Contenedor principal de tarjetas -->
-    <main class="main" role="main" aria-label="Contenido principal">
+    <!-- FILTROS -->
+    <br>
+    <h3 id="category-filters-label" class="filters-group__title">📂 Filtrar por categoría:</h3>
+    <nav class="filters-bar" role="navigation" aria-label="Filtros de productos">
         <div class="container">
-            <section class="gallery" id="card-container" aria-live="polite" aria-label="Galería de productos">
-                <div class="loading" id="loading">
-                    <p>Cargando productos...</p>
+            <h2 class="filters-bar__title sr-only">Filtros de productos disponibles</h2>
+            <div class="filters-group" role="group" aria-labelledby="category-filters-label">
+
+                <div class="filters-container" id="filters-container"></div>
+            </div>
+
+            <div class="search-group" role="search" aria-labelledby="search-label">
+                <h3 id="search-label" class="sr-only">Buscar productos</h3>
+                <div class="search-container">
+                    <input type="search" id="product-search" class="search-input" placeholder="🔎 Buscar productos..."
+                        aria-describedby="search-help">
+                    <small id="search-help" class="search-help">Busca por nombre, descripción o etiquetas</small>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="filter-status" id="filter-status" aria-live="polite"></div>
+        <div class="filter-stats" id="filter-stats">
+            <span id="filter-stats-text">Sin filtros activos</span>
+            <button class="clear-filters-btn" id="clear-filters" style="display: none;">🗑️ Limpiar filtros</button>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="main-content" class="main" role="main" aria-label="Contenido principal de productos">
+        <div class="container">
+            <section class="gallery-header" aria-labelledby="gallery-title">
+                <h2 id="gallery-title" class="gallery-title">Nuestra Colección de Productos</h2>
+                <p class="gallery-description">Explora nuestra selección cuidadosamente curada. Usa los filtros para
+                    encontrar lo que necesitas.</p>
+            </section>
+
+            <section class="gallery" id="card-container" aria-live="polite" aria-relevant="additions removals">
+                <div class="loading-state" id="loading" role="status" aria-live="polite">
+                    <div class="loading-spinner" aria-hidden="true">
+                        <div class="spinner"></div>
+                    </div>
+                    <p class="loading-text">🔄️ Cargando productos...</p>
+                </div>
+
+                <div class="empty-state hidden" id="empty-state" role="status" aria-live="polite">
+                    <p class="empty-state__text">📭 No se encontraron productos con los filtros seleccionados</p>
+                    <button class="empty-state__action" id="reset-filters">🔄️ Mostrar todos los productos</button>
                 </div>
             </section>
+
+            <footer class="gallery-footer" aria-label="Información de la galería">
+                <div class="gallery-info">
+                    <p id="gallery-summary" class="gallery-summary">Mostrando <strong>0</strong> de <strong>0</strong>
+                        productos</p>
+                </div>
+            </footer>
         </div>
     </main>
 
-    <!-- Pie de página -->
-    <footer class="footer" role="contentinfo" aria-label="Información del pie de página">
+    <!-- PIE DE PÁGINA -->
+    <footer class="site-footer" role="contentinfo" aria-label="Información del sitio">
         <div class="container">
-            <p>&copy; 2025 Galería Interactiva. Proyecto Frontend.</p>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">Sobre este proyecto</h3>
+                    <p class="footer-text">Proyecto Frontend demostrando HTML semántico, CSS responsive y JavaScript
+                        moderno.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">🛠️ Tecnologías</h3>
+                    <ul class="footer-list" aria-label="Tecnologías utilizadas">
+                        <li>HTML5 semántico</li>
+                        <li>CSS3 + Flexbox</li>
+                        <li>JavaScript ES6+</li>
+                        <li>Accesibilidad WCAG</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">📚 Recursos</h3>
+                    <ul class="footer-list" aria-label="Recursos de aprendizaje">
+                        <li><a href="./docs/index.html" target="_blank" class="footer-link">Documentación</a></li>
+                        <li><a href="https://github.com/Pitcher755/Galeria-Tarjetas-Responsive" target="_blank"
+                                class="footer-link">Código fuente</a></li>
+                        <li><a href="#" target="_blank" class="footer-link">Guía de accesibilidad</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2025 Galería Interactiva. <span class="nowrap">Proyecto Frontend.</span></p>
+            </div>
         </div>
     </footer>
 
-    <!-- Scripts JavaScript -->
-    <script src="js/script.js"></script>
+    <!-- SCRIPT PRINCIPAL MODULAR -->
+    <script type="module" src="./js/app.js"></script>
 </body>
 
 </html>

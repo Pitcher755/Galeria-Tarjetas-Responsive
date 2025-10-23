@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/FilterSystem.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/FilterSystem.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file FilterSystem.js
+ * @description Lógica central para aplicar y gestionar los filtros combinados.
+ */
+
+/**
+ * @constant
+ * @type {Object}
+ * @property {string} currentCategory - Categoría activa actual
+ * @property {string} searchQuery - Término de búsqueda actual
+ * @property {Object} activeFilters - Filtros activos por tipo (status, tags)
+ * @property {boolean} showOutOfStock - Mostrar productos agotados
+ */
+export const FilterSystem = {
+    currentCategory: "all",
+    searchQuery: "",
+    activeFilters: {
+        status: [],
+        tags: [],
+    },
+    showOutOfStock: true,
+
+    /**
+     * @function applyAllFilters
+     * @param {Array&lt;Object>} products - Lista de productos a filtrar
+     * @returns {Array&lt;Object>} Productos filtrados
+     */
+    applyAllFilters(products) {
+        return products.filter((product) => {
+            return (
+                this.matchesCategory(product) &amp;&amp;
+                this.matchesSearch(product) &amp;&amp;
+                this.matchesStatusFilters(product) &amp;&amp;
+                this.matchesTagFilters(product) &amp;&amp;
+                this.matchesStockFilter(product)
+            );
+        });
+    },
+
+    /**
+     * @function matchesCategory
+     * @param {Object} product - Producto a evaluar
+     * @returns {boolean}
+     */
+    matchesCategory(product) {
+        return (
+            this.currentCategory === "all" ||
+            product.category === this.currentCategory
+        );
+    },
+
+    /**
+     * @function matchesSearch
+     * @param {Object} product - Producto a evaluar
+     * @returns {boolean}
+     */
+    matchesSearch(product) {
+        if (!this.searchQuery.trim()) return true;
+        const searchTerm = this.searchQuery.toLowerCase();
+        return (
+            product.title.toLowerCase().includes(searchTerm) ||
+            product.description.toLowerCase().includes(searchTerm) ||
+            (product.tags &amp;&amp;
+                product.tags.some((tag) => tag.toLowerCase().includes(searchTerm)))
+        );
+    },
+
+    /**
+     * @function matchesStatusFilters
+     * @param {Object} product - Producto a evaluar
+     * @returns {boolean}
+     */
+    matchesStatusFilters(product) {
+        if (this.activeFilters.status.length === 0) return true;
+
+        return this.activeFilters.status.some((status) => {
+            switch (status) {
+                case "featured":
+                    return product.featured === true;
+                case "new":
+                    return product.tags &amp;&amp; product.tags.includes("nuevo");
+                case "discount":
+                    return product.originalPrice &amp;&amp; product.originalPrice > product.price;
+                default:
+                    return true;
+            }
+        });
+    },
+
+    /**
+     * @function matchesTagFilters
+     * @param {Object} product - Producto a evaluar
+     * @returns {boolean}
+     */
+    matchesTagFilters(product) {
+        if (this.activeFilters.tags.length === 0) return true;
+        return this.activeFilters.tags.some(
+            (tag) => product.tags &amp;&amp; product.tags.includes(tag)
+        );
+    },
+
+    /**
+     * @function matchesStockFilter
+     * @param {Object} product - Producto a evaluar
+     * @returns {boolean}
+     */
+    matchesStockFilter(product) {
+        return this.showOutOfStock || product.stock > 0;
+    },
+
+    /**
+     * @function addFilter
+     * @param {string} type - Tipo de filtro (status, tags)
+     * @param {string} value - Valor del filtro
+     * @returns {void}
+     */
+    addFilter(type, value) {
+        if (!this.activeFilters[type].includes(value)) {
+            this.activeFilters[type].push(value);
+        }
+    },
+
+    /**
+     * @function removeFilter
+     * @param {string} type - Tipo de filtro
+     * @param {string} value - Valor del filtro
+     * @returns {void}
+     */
+    removeFilter(type, value) {
+        this.activeFilters[type] = this.activeFilters[type].filter(
+            (item) => item !== value
+        );
+    },
+
+    /**
+     * @function clearAllFilters
+     * @returns {void}
+     */
+    clearAllFilters() {
+        this.currentCategory = "all";
+        this.searchQuery = "";
+        this.activeFilters = { status: [], tags: [] };
+        this.showOutOfStock = true;
+    },
+
+    /**
+     * @function getFilterStats
+     * @returns {Object} Estadísticas de los filtros activos
+     */
+    getFilterStats() {
+        return {
+            category: this.currentCategory !== "all",
+            search: this.searchQuery.trim() !== "",
+            status: this.activeFilters.status.length,
+            tags: this.activeFilters.tags.length,
+            stock: !this.showOutOfStock,
+            total:
+                (this.currentCategory !== "all" ? 1 : 0) +
+                (this.searchQuery.trim() !== "" ? 1 : 0) +
+                this.activeFilters.status.length +
+                this.activeFilters.tags.length +
+                (!this.showOutOfStock ? 1 : 0),
+        };
+    },
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Logger.html">Logger</a></li><li><a href="PerformanceOptimizer.html">PerformanceOptimizer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ApiConfig">ApiConfig</a></li><li><a href="global.html#ApiService">ApiService</a></li><li><a href="global.html#AppConfig">AppConfig</a></li><li><a href="global.html#AppState">AppState</a></li><li><a href="global.html#FilterSystem">FilterSystem</a></li><li><a href="global.html#MockConfig">MockConfig</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#applyAllFilters">applyAllFilters</a></li><li><a href="global.html#applyAllFiltersAndRender">applyAllFiltersAndRender</a></li><li><a href="global.html#clearAllFilters">clearAllFilters</a></li><li><a href="global.html#createProductCard">createProductCard</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#generateStarRating">generateStarRating</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoryIcon">getCategoryIcon</a></li><li><a href="global.html#getFilterOptions">getFilterOptions</a></li><li><a href="global.html#getFilterStats">getFilterStats</a></li><li><a href="global.html#getMockCategories">getMockCategories</a></li><li><a href="global.html#getMockFilters">getMockFilters</a></li><li><a href="global.html#getMockProducts">getMockProducts</a></li><li><a href="global.html#getMockSearch">getMockSearch</a></li><li><a href="global.html#getProducts">getProducts</a></li><li><a href="global.html#handleCategoryFilterClick">handleCategoryFilterClick</a></li><li><a href="global.html#handleCheckboxFilterChange">handleCheckboxFilterChange</a></li><li><a href="global.html#handleClearAllFilters">handleClearAllFilters</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#initLazyLoading">initLazyLoading</a></li><li><a href="global.html#initializeActiveFiltersDisplay">initializeActiveFiltersDisplay</a></li><li><a href="global.html#initializeCategoryFilters">initializeCategoryFilters</a></li><li><a href="global.html#initializeConnectionMonitor">initializeConnectionMonitor</a></li><li><a href="global.html#initializeFilters">initializeFilters</a></li><li><a href="global.html#initializeSearchFilter">initializeSearchFilter</a></li><li><a href="global.html#initializeStatusFilters">initializeStatusFilters</a></li><li><a href="global.html#loadFallbackData">loadFallbackData</a></li><li><a href="global.html#loadProductData">loadProductData</a></li><li><a href="global.html#matchesCategory">matchesCategory</a></li><li><a href="global.html#matchesSearch">matchesSearch</a></li><li><a href="global.html#matchesStatusFilters">matchesStatusFilters</a></li><li><a href="global.html#matchesStockFilter">matchesStockFilter</a></li><li><a href="global.html#matchesTagFilters">matchesTagFilters</a></li><li><a href="global.html#mockRequest">mockRequest</a></li><li><a href="global.html#preloadCriticalResources">preloadCriticalResources</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#renderAllProducts">renderAllProducts</a></li><li><a href="global.html#renderFilteredProducts">renderFilteredProducts</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#resetFilterUI">resetFilterUI</a></li><li><a href="global.html#searchProducts">searchProducts</a></li><li><a href="global.html#showErrorMessage">showErrorMessage</a></li><li><a href="global.html#showLoadingState">showLoadingState</a></li><li><a href="global.html#showSkeletonLoading">showSkeletonLoading</a></li><li><a href="global.html#throttledRender">throttledRender</a></li><li><a href="global.html#updateActiveFiltersDisplay">updateActiveFiltersDisplay</a></li><li><a href="global.html#updateCategoryFilterButtons">updateCategoryFilterButtons</a></li><li><a href="global.html#updateConnectionStatus">updateConnectionStatus</a></li><li><a href="global.html#updateFilterStats">updateFilterStats</a></li><li><a href="global.html#updateStatistics">updateStatistics</a></li><li><a href="global.html#validateDOMElements">validateDOMElements</a></li><li><a href="global.html#warn">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 24 2025 00:36:51 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
