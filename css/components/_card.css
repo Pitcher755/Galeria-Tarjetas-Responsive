@@ -155,7 +155,8 @@
 /* INDICADOR DE PRODUCTOS NUEVOS */
 .card__new-badge {
     position: absolute;
-    top: var(--space-sm);
+    top: 12%;
+    bottom: 81%;
     left: var(--space-sm);
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
@@ -251,9 +252,12 @@
 }
 
 .stock-badge {
+    position: absolute;
+    bottom: var(--space-xs);
+    right: var(--space-xs);
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-sm);
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .stock-badge.in-stock {
@@ -262,6 +266,8 @@
 }
 
 .stock-badge.out-of-stock {
+    position: relative;
+    bottom: var(--space-xs);
     background: #fecaca;
     color: #dc2626;
 }
@@ -288,15 +294,18 @@
 .card--featured::before {
     content: "⭐ Destacado";
     position: absolute;
-    top: var(--space-sm);
-    left: var(--space-sm);
-    background: var(--primary-color);
+    top: 31%;
+    left: 51%;
+    bottom: 64%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: var(--white);
-    padding: var(--radius-sm) var(--space-sm);
+    padding: var(--radius-xs) var(--space-md);
     border-radius: var(--radius-sm);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     font-weight: 600;
     z-index: 2;
+    animation: bounce 1s infinite;
 }
 
 .card--out-of-stock {
