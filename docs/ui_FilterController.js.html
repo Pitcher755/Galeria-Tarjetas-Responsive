@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/FilterController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/FilterController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { AppConfig } from '../config/AppConfig.js';
+import { FilterSystem } from '../core/FilterSystem.js';
+import { AppState } from '../state/AppState.js';
+import { Logger } from '../utils/Logger.js';
+import { PerformanceOptimizer } from '../utils/Performance.js';
+import * as UIUpdates from './UIUpdates.js';
+
+/**
+ * @file FilterController.js
+ * @description Maneja la inicialización de la UI de filtros y los eventos de interacción.
+ */
+
+/**
+ * @function initializeFilters
+ * @param {Function} applyAllFiltersAndRender - Función de orquestación del renderizado
+ * @returns {void}
+ */
+export function initializeFilters(applyAllFiltersAndRender) {
+    Logger.info("Inicializando sistema de filtros...");
+
+    initializeCategoryFilters(applyAllFiltersAndRender);
+    initializeSearchFilter(applyAllFiltersAndRender);
+    initializeStatusFilters(applyAllFiltersAndRender);
+    initializeActiveFiltersDisplay(applyAllFiltersAndRender);
+
+    Logger.info("✅ Sistema de filtros avanzado inicializado");
+}
+
+/**
+ * @function initializeCategoryFilters
+ * @param {Function} applyAllFiltersAndRender - Función de orquestación del renderizado
+ * @returns {void}
+ */
+export function initializeCategoryFilters(applyAllFiltersAndRender) {
+    const filtersContainer = document.querySelector(AppConfig.selectors.filtersContainer);
+
+    if (!filtersContainer) {
+        Logger.warn("Contenedor de filtros no encontrado");
+        return;
+    }
+
+    const handleCategoryClick = (event) =>
+        handleCategoryFilterClick(event, applyAllFiltersAndRender);
+
+    const filterButtonHTML = AppState.categories.map(
+        (category) => `
+            &lt;button 
+                class="${AppConfig.classes.filterBtn}"
+                data-category="${category.id}"
+                data-filter-type="category"
+                aria-pressed="${category.id === "all" ? "true" : "false"}">
+                ${category.icon}
+                ${category.name}
+            &lt;/button>
+        `
+    ).join("");
+
+    filtersContainer.innerHTML = filterButtonHTML;
+
+    const filterButtons = filtersContainer.querySelectorAll(".filter-btn");
+    filterButtons.forEach((button) => {
+        button.addEventListener("click", handleCategoryClick);
+    });
+}
+
+/**
+ * @function initializeSearchFilter
+ * @param {Function} applyAllFiltersAndRender - Función de orquestación del renderizado
+ * @returns {void}
+ */
+export function initializeSearchFilter(applyAllFiltersAndRender) {
+    const searchInput = document.querySelector(AppConfig.selectors.searchInput);
+
+    if (!searchInput) {
+        Logger.warn("Campo de búsqueda no encontrado");
+        return;
+    }
+
+    searchInput.disabled = false;
+    searchInput.placeholder = "🔎 Buscar productos...";
+
+    const debouncedSearch = PerformanceOptimizer.debounce((event) => {
+        FilterSystem.searchQuery = event.target.value.trim();
+        applyAllFiltersAndRender();
+        Logger.info(`🔍 Búsqueda: "${FilterSystem.searchQuery}"`);
+    }, 300);
+
+    searchInput.addEventListener("input", debouncedSearch);
+
+    searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            event.target.value = "";
+            FilterSystem.searchQuery = "";
+            applyAllFiltersAndRender();
+        }
+    });
+}
+
+/**
+ * @function initializeStatusFilters
+ * @param {Function} applyAllFiltersAndRender - Función de orquestación del renderizado
+ * @returns {void}
+ */
+export function initializeStatusFilters(applyAllFiltersAndRender) {
+    const filterStatusContainer = document.querySelector(AppConfig.selectors.filterStatus);
+
+    if (!filterStatusContainer) {
+        Logger.warn("Contenedor de filtros de estado no encontrado");
+        return;
+    }
+
+    const handleCheckboxChange = (event) =>
+        handleCheckboxFilterChange(event, applyAllFiltersAndRender);
+
+    const statusFiltersHTML = `
+        &lt;div class="filter-group">
+            &lt;h4 class="filter-group-title">Estado&lt;/h4>
+            &lt;div class="filter-options">
+                ${AppConfig.filters.statusOptions
+            .map(
+                (filter) => `
+                        &lt;label class="filter-checkbox">
+                            &lt;input type="checkbox" value="${filter.id}" data-filter-type="status">
+                            &lt;span class="filter-label">${filter.icon} ${filter.name}&lt;/span>
+                        &lt;/label>
+                    `
+            )
+            .join("")}
+            &lt;/div>
+        &lt;/div>
+        &lt;div class="filter-group">
+            &lt;h4 class="filter-group-title">🏷️ Etiquetas&lt;/h4>
+            &lt;div class="filter-options">
+                ${AppConfig.filters.tagOptions
+            .map(
+                (filter) => `
+                        &lt;label class="filter-checkbox">
+                            &lt;input type="checkbox" value="${filter.id}" data-filter-type="tags">
+                            &lt;span class="filter-label">${filter.icon} ${filter.name}&lt;/span>
+                        &lt;/label>
+                    `
+            )
+            .join("")}
+            &lt;/div>
+        &lt;/div>
+        &lt;div class="filter-group">
+            &lt;h4 class="filter-group-title">📦 Disponibilidad&lt;/h4>
+            &lt;div class="filter-options">
+                &lt;label class="filter-checkbox">
+                    &lt;input type="checkbox" id="hide-out-of-stock" ${!FilterSystem.showOutOfStock ? "checked" : ""}>
+                    &lt;span class="filter-label">✅ Solo productos en stock&lt;/span>
+                &lt;/label>
+            &lt;/div>
+        &lt;/div>
+    `;
+
+    filterStatusContainer.innerHTML = statusFiltersHTML;
+
+    const checkboxes = filterStatusContainer.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", handleCheckboxChange);
+    });
+}
+
+/**
+ * @function initializeActiveFiltersDisplay
+ * @param {Function} applyAllFiltersAndRender - Función de orquestación del renderizado
+ * @returns {void}
+ */
+export function initializeActiveFiltersDisplay(applyAllFiltersAndRender) {
+    const clearFiltersBtn = document.querySelector(AppConfig.selectors.clearFilters);
+    const handleClearClick = () =>
+        handleClearAllFilters(applyAllFiltersAndRender);
+
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener("click", handleClearClick);
+    }
+
+    UIUpdates.updateActiveFiltersDisplay();
+}
+
+/**
+ * @function handleCategoryFilterClick
+ * @param {Event} event
+ * @param {Function} applyAllFiltersAndRender
+ * @returns {void}
+ */
+function handleCategoryFilterClick(event, applyAllFiltersAndRender) {
+    const button = event.target.closest(".filter-btn");
+    if (!button) return;
+
+    const category = button.dataset.category;
+
+    FilterSystem.currentCategory = category;
+    UIUpdates.updateCategoryFilterButtons(button);
+
+    applyAllFiltersAndRender();
+    Logger.info(`📂 Filtro de categoría aplicado: ${category}`);
+}
+
+/**
+ * @function handleCheckboxFilterChange
+ * @param {Event} event
+ * @param {Function} applyAllFiltersAndRender
+ * @returns {void}
+ */
+function handleCheckboxFilterChange(event, applyAllFiltersAndRender) {
+    const checkbox = event.target;
+    const filterType = checkbox.dataset.filterType;
+    const value = checkbox.value;
+
+    if (filterType) {
+        if (checkbox.checked) {
+            FilterSystem.addFilter(filterType, value);
+        } else {
+            FilterSystem.removeFilter(filterType, value);
+        }
+    } else if (checkbox.id === "hide-out-of-stock") {
+        FilterSystem.showOutOfStock = !checkbox.checked;
+    }
+
+    applyAllFiltersAndRender();
+    UIUpdates.updateActiveFiltersDisplay();
+    Logger.info(`✅ Filtro ${checkbox.checked ? "activado" : "desactivado"}: ${value || "stock"}`);
+}
+
+/**
+ * @function handleClearAllFilters
+ * @param {Function} applyAllFiltersAndRender
+ * @returns {void}
+ */
+function handleClearAllFilters(applyAllFiltersAndRender) {
+    FilterSystem.clearAllFilters();
+    UIUpdates.resetFilterUI();
+    applyAllFiltersAndRender();
+    UIUpdates.updateActiveFiltersDisplay();
+    Logger.info("🗑️ Todos los filtros han sido limpiados");
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Logger.html">Logger</a></li><li><a href="PerformanceOptimizer.html">PerformanceOptimizer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ApiConfig">ApiConfig</a></li><li><a href="global.html#ApiService">ApiService</a></li><li><a href="global.html#AppConfig">AppConfig</a></li><li><a href="global.html#AppState">AppState</a></li><li><a href="global.html#FilterSystem">FilterSystem</a></li><li><a href="global.html#MockConfig">MockConfig</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#applyAllFilters">applyAllFilters</a></li><li><a href="global.html#applyAllFiltersAndRender">applyAllFiltersAndRender</a></li><li><a href="global.html#clearAllFilters">clearAllFilters</a></li><li><a href="global.html#createProductCard">createProductCard</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#generateStarRating">generateStarRating</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoryIcon">getCategoryIcon</a></li><li><a href="global.html#getFilterOptions">getFilterOptions</a></li><li><a href="global.html#getFilterStats">getFilterStats</a></li><li><a href="global.html#getMockCategories">getMockCategories</a></li><li><a href="global.html#getMockFilters">getMockFilters</a></li><li><a href="global.html#getMockProducts">getMockProducts</a></li><li><a href="global.html#getMockSearch">getMockSearch</a></li><li><a href="global.html#getProducts">getProducts</a></li><li><a href="global.html#handleCategoryFilterClick">handleCategoryFilterClick</a></li><li><a href="global.html#handleCheckboxFilterChange">handleCheckboxFilterChange</a></li><li><a href="global.html#handleClearAllFilters">handleClearAllFilters</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#initLazyLoading">initLazyLoading</a></li><li><a href="global.html#initializeActiveFiltersDisplay">initializeActiveFiltersDisplay</a></li><li><a href="global.html#initializeCategoryFilters">initializeCategoryFilters</a></li><li><a href="global.html#initializeConnectionMonitor">initializeConnectionMonitor</a></li><li><a href="global.html#initializeFilters">initializeFilters</a></li><li><a href="global.html#initializeSearchFilter">initializeSearchFilter</a></li><li><a href="global.html#initializeStatusFilters">initializeStatusFilters</a></li><li><a href="global.html#loadFallbackData">loadFallbackData</a></li><li><a href="global.html#loadProductData">loadProductData</a></li><li><a href="global.html#matchesCategory">matchesCategory</a></li><li><a href="global.html#matchesSearch">matchesSearch</a></li><li><a href="global.html#matchesStatusFilters">matchesStatusFilters</a></li><li><a href="global.html#matchesStockFilter">matchesStockFilter</a></li><li><a href="global.html#matchesTagFilters">matchesTagFilters</a></li><li><a href="global.html#mockRequest">mockRequest</a></li><li><a href="global.html#preloadCriticalResources">preloadCriticalResources</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#renderAllProducts">renderAllProducts</a></li><li><a href="global.html#renderFilteredProducts">renderFilteredProducts</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#resetFilterUI">resetFilterUI</a></li><li><a href="global.html#searchProducts">searchProducts</a></li><li><a href="global.html#showErrorMessage">showErrorMessage</a></li><li><a href="global.html#showLoadingState">showLoadingState</a></li><li><a href="global.html#showSkeletonLoading">showSkeletonLoading</a></li><li><a href="global.html#throttledRender">throttledRender</a></li><li><a href="global.html#updateActiveFiltersDisplay">updateActiveFiltersDisplay</a></li><li><a href="global.html#updateCategoryFilterButtons">updateCategoryFilterButtons</a></li><li><a href="global.html#updateConnectionStatus">updateConnectionStatus</a></li><li><a href="global.html#updateFilterStats">updateFilterStats</a></li><li><a href="global.html#updateStatistics">updateStatistics</a></li><li><a href="global.html#validateDOMElements">validateDOMElements</a></li><li><a href="global.html#warn">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 24 2025 00:36:51 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

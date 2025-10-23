@@ -1,4 +1,32 @@
-import { AppConfig } from '../config/AppConfig.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: services/ApiService.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: services/ApiService.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { AppConfig } from '../config/AppConfig.js';
 import { AppState } from '../state/AppState.js';
 import { Logger } from '../utils/Logger.js';
 
@@ -51,7 +79,7 @@ export const ApiService = {
      * @description Realiza una petición HTTP, usando mock si está habilitado.
      * @param {string} url - URL del endpoint
      * @param {Object} [options={}] - Opciones de fetch
-     * @returns {Promise<Object>} Respuesta de la API
+     * @returns {Promise&lt;Object>} Respuesta de la API
      */
     async request(url, options = {}) {
         const startTime = Date.now();
@@ -63,7 +91,7 @@ export const ApiService = {
             // NOTA: Como 'ProductService.js' ahora decide si usar la API o no, 
             // dejaremos esta lógica interna de 'request' intacta para URLs que no sean http,
             // pero el ProductService evitará llamarla con URLs de prod si MockConfig.enabled es true.
-            if (MockConfig.enabled && !url.includes('http')) {
+            if (MockConfig.enabled &amp;&amp; !url.includes('http')) {
                 return await this.mockRequest(url, options);
             }
 
@@ -99,12 +127,12 @@ export const ApiService = {
      * @description Simula una petición a la API.
      * @param {string} endpoint - Endpoint a simular
      * @param {Object} [options={}] - Opciones de la petición
-     * @returns {Promise<Object>} Datos mock
+     * @returns {Promise&lt;Object>} Datos mock
      */
     async mockRequest(endpoint, options = {}) {
         await new Promise(resolve => setTimeout(resolve, MockConfig.delay));
 
-        if (Math.random() < MockConfig.failRate) {
+        if (Math.random() &lt; MockConfig.failRate) {
             throw new Error('Mock API Error: Simulated network failure');
         }
 
@@ -130,7 +158,7 @@ export const ApiService = {
      * @function getProducts
      * @description Construye la URL de productos para la API real.
      * @param {Object} [params={}] - Parámetros de filtrado
-     * @returns {Promise<Object>} Lista de productos
+     * @returns {Promise&lt;Object>} Lista de productos
      */
     async getProducts(params = {}) {
         const queryString = new URLSearchParams(params).toString();
@@ -142,7 +170,7 @@ export const ApiService = {
      * @async
      * @function getCategories
      * @description Construye la URL de categorías para la API real.
-     * @returns {Promise<Object>} Lista de categorías
+     * @returns {Promise&lt;Object>} Lista de categorías
      */
     async getCategories() {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.categories}`;
@@ -155,7 +183,7 @@ export const ApiService = {
      * @description Busca productos en la API real.
      * @param {string} query - Término de búsqueda
      * @param {Object} [filters={}] - Filtros adicionales
-     * @returns {Promise<Object>} Productos encontrados
+     * @returns {Promise&lt;Object>} Productos encontrados
      */
     async searchProducts(query, filters = {}) {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.search}`;
@@ -169,7 +197,7 @@ export const ApiService = {
      * @async
      * @function getFilterOptions
      * @description Obtiene opciones de filtrado.
-     * @returns {Promise<Object>} Opciones de filtrado disponibles
+     * @returns {Promise&lt;Object>} Opciones de filtrado disponibles
      */
     async getFilterOptions() {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.filters}`;
@@ -265,4 +293,26 @@ export const ApiService = {
             timestamp: new Date().toISOString()
         };
     }
-};
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Logger.html">Logger</a></li><li><a href="PerformanceOptimizer.html">PerformanceOptimizer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ApiConfig">ApiConfig</a></li><li><a href="global.html#ApiService">ApiService</a></li><li><a href="global.html#AppConfig">AppConfig</a></li><li><a href="global.html#AppState">AppState</a></li><li><a href="global.html#FilterSystem">FilterSystem</a></li><li><a href="global.html#MockConfig">MockConfig</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#applyAllFilters">applyAllFilters</a></li><li><a href="global.html#applyAllFiltersAndRender">applyAllFiltersAndRender</a></li><li><a href="global.html#clearAllFilters">clearAllFilters</a></li><li><a href="global.html#createProductCard">createProductCard</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#generateStarRating">generateStarRating</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoryIcon">getCategoryIcon</a></li><li><a href="global.html#getFilterOptions">getFilterOptions</a></li><li><a href="global.html#getFilterStats">getFilterStats</a></li><li><a href="global.html#getMockCategories">getMockCategories</a></li><li><a href="global.html#getMockFilters">getMockFilters</a></li><li><a href="global.html#getMockProducts">getMockProducts</a></li><li><a href="global.html#getMockSearch">getMockSearch</a></li><li><a href="global.html#getProducts">getProducts</a></li><li><a href="global.html#handleCategoryFilterClick">handleCategoryFilterClick</a></li><li><a href="global.html#handleCheckboxFilterChange">handleCheckboxFilterChange</a></li><li><a href="global.html#handleClearAllFilters">handleClearAllFilters</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#initLazyLoading">initLazyLoading</a></li><li><a href="global.html#initializeActiveFiltersDisplay">initializeActiveFiltersDisplay</a></li><li><a href="global.html#initializeCategoryFilters">initializeCategoryFilters</a></li><li><a href="global.html#initializeConnectionMonitor">initializeConnectionMonitor</a></li><li><a href="global.html#initializeFilters">initializeFilters</a></li><li><a href="global.html#initializeSearchFilter">initializeSearchFilter</a></li><li><a href="global.html#initializeStatusFilters">initializeStatusFilters</a></li><li><a href="global.html#loadFallbackData">loadFallbackData</a></li><li><a href="global.html#loadProductData">loadProductData</a></li><li><a href="global.html#matchesCategory">matchesCategory</a></li><li><a href="global.html#matchesSearch">matchesSearch</a></li><li><a href="global.html#matchesStatusFilters">matchesStatusFilters</a></li><li><a href="global.html#matchesStockFilter">matchesStockFilter</a></li><li><a href="global.html#matchesTagFilters">matchesTagFilters</a></li><li><a href="global.html#mockRequest">mockRequest</a></li><li><a href="global.html#preloadCriticalResources">preloadCriticalResources</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#renderAllProducts">renderAllProducts</a></li><li><a href="global.html#renderFilteredProducts">renderFilteredProducts</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#resetFilterUI">resetFilterUI</a></li><li><a href="global.html#searchProducts">searchProducts</a></li><li><a href="global.html#showErrorMessage">showErrorMessage</a></li><li><a href="global.html#showLoadingState">showLoadingState</a></li><li><a href="global.html#showSkeletonLoading">showSkeletonLoading</a></li><li><a href="global.html#throttledRender">throttledRender</a></li><li><a href="global.html#updateActiveFiltersDisplay">updateActiveFiltersDisplay</a></li><li><a href="global.html#updateCategoryFilterButtons">updateCategoryFilterButtons</a></li><li><a href="global.html#updateConnectionStatus">updateConnectionStatus</a></li><li><a href="global.html#updateFilterStats">updateFilterStats</a></li><li><a href="global.html#updateStatistics">updateStatistics</a></li><li><a href="global.html#validateDOMElements">validateDOMElements</a></li><li><a href="global.html#warn">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 24 2025 00:36:51 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
