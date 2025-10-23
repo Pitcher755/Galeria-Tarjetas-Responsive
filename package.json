@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "minami": "^1.2.3"
+  },
+  "scripts": {
+    "docs": "jsdoc -c jsdoc.json",
+    "docs:simple": "jsdoc -r js/ -d docs/ -R README.md",
+    "docs:watch": "jsdoc -c jsdoc.json -w"
+  }
+}

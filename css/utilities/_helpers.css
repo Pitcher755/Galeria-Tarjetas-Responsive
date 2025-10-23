@@ -1,0 +1,72 @@
+/* UTILITIES: CLASES DE AYUDA Y VISIBILIDAD */
+
+.hidden {
+    display: none !important;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* Visibilidad condicional para JavaScript */
+.no-js .js-only {
+    display: none !important;
+}
+
+.js-enabled .js-hidden {
+    display: none !important;
+}
+
+/* Utilidades de Flexbox */
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.items-start {
+    align-items: flex-start;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.items-end {
+    align-items: flex-end;
+}
+
+.items-stretch {
+    align-items: stretch;
+}
+
+.order-first {
+    order: -1;
+}
+
+.order-last {
+    order: 999;
+}

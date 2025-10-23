@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/UIUpdates.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/UIUpdates.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { AppConfig } from '../config/AppConfig.js';
+import { FilterSystem } from '../core/FilterSystem.js';
+import { AppState } from '../state/AppState.js';
+import { Logger } from '../utils/Logger.js';
+
+/**
+ * @file UIUpdates.js
+ * @description Funciones para modificar elementos visuales de la interfaz (estadísticas, filtros, mensajes).
+ */
+
+/**
+ * @function updateStatistics
+ * @description Actualiza las estadísticas mostradas en la interfaz (total y visible).
+ * @returns {void}
+ */
+export function updateStatistics() {
+    const totalElement = document.querySelector(AppConfig.selectors.totalProducts);
+    const visibleElement = document.querySelector(AppConfig.selectors.visibleProducts);
+    const summaryElement = document.querySelector(AppConfig.selectors.gallerySummary);
+
+    if (totalElement) {
+        totalElement.textContent = AppState.products.length;
+    }
+
+    if (visibleElement) {
+        visibleElement.textContent = AppState.filteredProducts.length;
+    }
+
+    if (summaryElement) {
+        summaryElement.innerHTML = `
+            Mostrando *${AppState.filteredProducts.length}*
+            de *${AppState.products.length}* productos
+        `;
+    }
+}
+
+/**
+ * @function updateFilterStats
+ * @description Actualiza el contador de filtros activos y el botón de limpiar filtros.
+ * @returns {void}
+ */
+export function updateFilterStats() {
+    const filterStats = document.querySelector(AppConfig.selectors.filterStats);
+    const clearFiltersBtn = document.querySelector(AppConfig.selectors.clearFilters);
+    const filterStatsData = FilterSystem.getFilterStats();
+
+    if (filterStats) {
+        filterStats.textContent =
+            filterStatsData.total > 0
+                ? `${filterStatsData.total} filtro(s) activo(s)`
+                : "Sin filtros activos";
+    }
+
+    if (clearFiltersBtn) {
+        clearFiltersBtn.style.display =
+            filterStatsData.total > 0 ? "block" : "none";
+    }
+}
+
+/**
+ * @function showLoadingState
+ * @description Muestra el estado de carga en la interfaz y oculta el estado vacío.
+ * @returns {void}
+ */
+export function showLoadingState() {
+    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
+    const emptyState = document.querySelector(AppConfig.selectors.emptyState);
+
+    if (loadingElement) {
+        loadingElement.classList.remove(AppConfig.classes.hidden);
+    }
+
+    if (emptyState) {
+        emptyState.classList.add(AppConfig.classes.hidden);
+    }
+}
+
+/**
+ * @function showErrorMessage
+ * @description Muestra un mensaje de error crítico al usuario.
+ * @param {string} message - Mensaje de error a mostrar
+ * @returns {void}
+ */
+export function showErrorMessage(message) {
+    const container = document.querySelector(AppConfig.selectors.cardContainer);
+    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
+
+    if (loadingElement) {
+        loadingElement.classList.add(AppConfig.classes.hidden);
+    }
+
+    if (container) {
+        container.innerHTML = `
+            &lt;div class="error-message">
+                &lt;p>${message}&lt;/p>
+                &lt;button class="retry-btn" onclick="window.location.reload()">Reintentar&lt;/button>
+            &lt;/div>
+        `;
+    }
+}
+
+/**
+ * @function updateCategoryFilterButtons
+ * @description Actualiza el estado visual de los botones de categoría (clase 'active').
+ * @param {HTMLElement} activeButton - Botón activo actualmente
+ * @returns {void}
+ */
+export function updateCategoryFilterButtons(activeButton) {
+    const allButtons = document.querySelectorAll('[data-filter-type="category"]');
+
+    allButtons.forEach((button) => {
+        const isActive = button === activeButton;
+        button.classList.toggle(AppConfig.classes.active, isActive);
+        button.setAttribute("aria-pressed", isActive.toString());
+    });
+}
+
+/**
+ * @function resetFilterUI
+ * @description Restablece la interfaz de usuario de filtros a su estado inicial.
+ * @returns {void}
+ */
+export function resetFilterUI() {
+    const categoryButtons = document.querySelectorAll('[data-filter-type="category"]');
+    categoryButtons.forEach((button) => {
+        const isAll = button.dataset.category === "all";
+        button.classList.toggle(AppConfig.classes.active, isAll);
+        button.setAttribute("aria-pressed", isAll.toString());
+    });
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+
+    const searchInput = document.querySelector(AppConfig.selectors.searchInput);
+    if (searchInput) {
+        searchInput.value = "";
+    }
+}
+
+/**
+ * @function updateActiveFiltersDisplay
+ * @description Actualiza la visualización de los filtros activos (Placeholder).
+ * @returns {void}
+ */
+export function updateActiveFiltersDisplay() {
+    Logger.info("Actualizando visualización de filtros activos");
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Logger.html">Logger</a></li><li><a href="PerformanceOptimizer.html">PerformanceOptimizer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ApiConfig">ApiConfig</a></li><li><a href="global.html#ApiService">ApiService</a></li><li><a href="global.html#AppConfig">AppConfig</a></li><li><a href="global.html#AppState">AppState</a></li><li><a href="global.html#FilterSystem">FilterSystem</a></li><li><a href="global.html#MockConfig">MockConfig</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#applyAllFilters">applyAllFilters</a></li><li><a href="global.html#applyAllFiltersAndRender">applyAllFiltersAndRender</a></li><li><a href="global.html#clearAllFilters">clearAllFilters</a></li><li><a href="global.html#createProductCard">createProductCard</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#generateStarRating">generateStarRating</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoryIcon">getCategoryIcon</a></li><li><a href="global.html#getFilterOptions">getFilterOptions</a></li><li><a href="global.html#getFilterStats">getFilterStats</a></li><li><a href="global.html#getMockCategories">getMockCategories</a></li><li><a href="global.html#getMockFilters">getMockFilters</a></li><li><a href="global.html#getMockProducts">getMockProducts</a></li><li><a href="global.html#getMockSearch">getMockSearch</a></li><li><a href="global.html#getProducts">getProducts</a></li><li><a href="global.html#handleCategoryFilterClick">handleCategoryFilterClick</a></li><li><a href="global.html#handleCheckboxFilterChange">handleCheckboxFilterChange</a></li><li><a href="global.html#handleClearAllFilters">handleClearAllFilters</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#initLazyLoading">initLazyLoading</a></li><li><a href="global.html#initializeActiveFiltersDisplay">initializeActiveFiltersDisplay</a></li><li><a href="global.html#initializeCategoryFilters">initializeCategoryFilters</a></li><li><a href="global.html#initializeConnectionMonitor">initializeConnectionMonitor</a></li><li><a href="global.html#initializeFilters">initializeFilters</a></li><li><a href="global.html#initializeSearchFilter">initializeSearchFilter</a></li><li><a href="global.html#initializeStatusFilters">initializeStatusFilters</a></li><li><a href="global.html#loadFallbackData">loadFallbackData</a></li><li><a href="global.html#loadProductData">loadProductData</a></li><li><a href="global.html#matchesCategory">matchesCategory</a></li><li><a href="global.html#matchesSearch">matchesSearch</a></li><li><a href="global.html#matchesStatusFilters">matchesStatusFilters</a></li><li><a href="global.html#matchesStockFilter">matchesStockFilter</a></li><li><a href="global.html#matchesTagFilters">matchesTagFilters</a></li><li><a href="global.html#mockRequest">mockRequest</a></li><li><a href="global.html#preloadCriticalResources">preloadCriticalResources</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#renderAllProducts">renderAllProducts</a></li><li><a href="global.html#renderFilteredProducts">renderFilteredProducts</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#resetFilterUI">resetFilterUI</a></li><li><a href="global.html#searchProducts">searchProducts</a></li><li><a href="global.html#showErrorMessage">showErrorMessage</a></li><li><a href="global.html#showLoadingState">showLoadingState</a></li><li><a href="global.html#showSkeletonLoading">showSkeletonLoading</a></li><li><a href="global.html#throttledRender">throttledRender</a></li><li><a href="global.html#updateActiveFiltersDisplay">updateActiveFiltersDisplay</a></li><li><a href="global.html#updateCategoryFilterButtons">updateCategoryFilterButtons</a></li><li><a href="global.html#updateConnectionStatus">updateConnectionStatus</a></li><li><a href="global.html#updateFilterStats">updateFilterStats</a></li><li><a href="global.html#updateStatistics">updateStatistics</a></li><li><a href="global.html#validateDOMElements">validateDOMElements</a></li><li><a href="global.html#warn">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 24 2025 00:36:52 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

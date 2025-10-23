@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/Renderer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/Renderer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { AppConfig } from '../config/AppConfig.js';
+import { AppState } from '../state/AppState.js';
+import { Logger } from '../utils/Logger.js';
+import { PerformanceOptimizer } from '../utils/Performance.js';
+
+/**
+ * @file Renderer.js
+ * @description Funciones encargadas de generar HTML y renderizar la galería.
+ */
+
+/**
+ * @function renderAllProducts
+ * @description Inicializa la lista de productos filtrados con todos los productos y renderiza.
+ * @returns {void}
+ */
+export function renderAllProducts() {
+    Logger.info("Renderizando todos los productos...");
+    AppState.filteredProducts = [...AppState.products];
+    renderFilteredProducts();
+}
+
+/**
+ * @function renderFilteredProducts
+ * @description Renderiza los productos actualmente en AppState.filteredProducts.
+ * @returns {void}
+ */
+export function renderFilteredProducts() {
+    const container = document.querySelector(AppConfig.selectors.cardContainer);
+    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
+    const emptyState = document.querySelector(AppConfig.selectors.emptyState);
+
+    if (loadingElement) {
+        loadingElement.classList.add(AppConfig.classes.hidden);
+    }
+
+    if (AppState.filteredProducts.length === 0) {
+        if (emptyState) {
+            emptyState.classList.remove(AppConfig.classes.hidden);
+        }
+        container.innerHTML = "";
+        return;
+    }
+
+    if (emptyState) {
+        emptyState.classList.add(AppConfig.classes.hidden);
+    }
+
+    const fragment = document.createDocumentFragment();
+    const tempContainer = document.createElement('div');
+
+    // Usar la función helper para crear las tarjetas
+    tempContainer.innerHTML = AppState.filteredProducts.map(product => createProductCard(product)).join("");
+
+    while (tempContainer.firstChild) {
+        fragment.appendChild(tempContainer.firstChild);
+    }
+
+    container.innerHTML = "";
+    container.appendChild(fragment);
+
+    PerformanceOptimizer.initLazyLoading();
+    Logger.info(`✅ ${AppState.filteredProducts.length} productos renderizados`);
+}
+
+/**
+ * @function createProductCard
+ * @description Crea el HTML para una tarjeta de producto.
+ * @param {Object} product - Datos del producto
+ * @param {number} product.id
+ * @param {string} product.title
+ * @param {string} product.category
+ * @param {number} product.price
+ * @param {number} [product.originalPrice]
+ * @param {string} product.description
+ * @param {string} product.image
+ * @param {number} product.rating
+ * @param {number} product.reviewCount
+ * @param {number} product.stock
+ * @param {boolean} product.featured
+ * @returns {string} HTML de la tarjeta
+ */
+function createProductCard(product) {
+    const hasDiscount = product.originalPrice &amp;&amp; product.originalPrice > product.price;
+    const discountPercent = hasDiscount
+        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+        : 0;
+    const isOutOfStock = product.stock === 0;
+    const isNew = product.tags &amp;&amp; product.tags.includes("nuevo");
+
+    const cardClasses = [
+        AppConfig.classes.card,
+        product.featured ? AppConfig.classes.featured : "",
+        isOutOfStock ? AppConfig.classes.outOfStock : ""
+    ].filter(Boolean).join(" ");
+
+    return `
+        &lt;article class="${cardClasses}" 
+            data-category="${product.category}" 
+            data-id="${product.id}" 
+            aria-labelledby="product-title-${product.id}">
+            
+            &lt;div class="card__image-container">
+                ${isNew ? '&lt;span class="card__new-badge">🆕 Nuevo&lt;/span>' : ""}
+                ${product.featured ? '&lt;span class="card__badge">⭐ Destacado&lt;/span>' : ""}
+                &lt;img 
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                    data-src="${product.image}" 
+                    alt="${product.title}"
+                    class="card__image loading"
+                    loading="lazy"
+                    decoding="async">
+            &lt;/div>
+
+            ${hasDiscount ? `&lt;span class="card__discount">-${discountPercent}%&lt;/span>` : ""}
+
+            &lt;div class="card__content">
+                &lt;h3 id="product-title-${product.id}" class="card__title">
+                    ${product.title}
+                &lt;/h3>
+                &lt;p class="card__description">${product.description}&lt;/p>
+                &lt;div class="card__rating">
+                    &lt;span class="rating__stars">${generateStarRating(product.rating)}&lt;/span>
+                    &lt;span class="rating__text">${product.rating} (${product.reviewCount} reseñas)&lt;/span>
+                &lt;/div>
+            &lt;/div>
+
+            &lt;div class="card__footer">
+                &lt;div class="price-container">
+                    ${hasDiscount ? `&lt;span class="card__original-price">€${product.originalPrice.toFixed(2)}&lt;/span>` : ""}
+                    &lt;span class="card__price">€${product.price.toFixed(2)}&lt;/span>
+                &lt;/div>
+                &lt;div class="stock-info ${isOutOfStock ? 'stock-badge out-of-stock' : 'stock-badge in-stock'}">
+                    ${isOutOfStock ? "❌ Agotado" : `✅ ${product.stock} en stock`}
+                &lt;/div>
+            &lt;/div>
+        &lt;/article>
+    `;
+}
+
+/**
+ * @function generateStarRating
+ * @param {number} rating - Calificación del producto (0-5)
+ * @returns {string} HTML de las estrellas
+ */
+function generateStarRating(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    return (
+        "⭐".repeat(fullStars) + (hasHalfStar ? "✨" : "") + "☆".repeat(emptyStars)
+    );
+}
+
+/**
+ * @function getCategoryIcon
+ * @param {string} category - ID de la categoría
+ * @returns {string} Icono de la categoría
+ */
+function getCategoryIcon(category) {
+    const categoryData = AppState.categories.find((cat) => cat.id === category);
+    return categoryData?.icon || "📦";
+}
+
+/**
+ * @function showSkeletonLoading
+ * @description Muestra esqueletos de carga mientras se cargan los productos.
+ * @returns {void}
+ */
+export function showSkeletonLoading() {
+    const container = document.querySelector(AppConfig.selectors.cardContainer);
+    if (!container) return;
+
+    const skeletonCount = 8;
+    const skeletonsHTML = Array.from({ length: skeletonCount }, () => `
+        &lt;div class="card skeleton-card">
+            &lt;div class="skeleton-image skeleton">&lt;/div>
+            &lt;div class="card__content">
+                &lt;div class="skeleton-text skeleton skeleton-text--medium">&lt;/div>
+                &lt;div class="skeleton-text skeleton skeleton-text--short">&lt;/div>
+                &lt;div class="skeleton-text skeleton">&lt;/div>
+            &lt;/div>
+        &lt;/div>
+    `).join("");
+
+    container.innerHTML = skeletonsHTML;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Logger.html">Logger</a></li><li><a href="PerformanceOptimizer.html">PerformanceOptimizer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ApiConfig">ApiConfig</a></li><li><a href="global.html#ApiService">ApiService</a></li><li><a href="global.html#AppConfig">AppConfig</a></li><li><a href="global.html#AppState">AppState</a></li><li><a href="global.html#FilterSystem">FilterSystem</a></li><li><a href="global.html#MockConfig">MockConfig</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#applyAllFilters">applyAllFilters</a></li><li><a href="global.html#applyAllFiltersAndRender">applyAllFiltersAndRender</a></li><li><a href="global.html#clearAllFilters">clearAllFilters</a></li><li><a href="global.html#createProductCard">createProductCard</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#generateStarRating">generateStarRating</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoryIcon">getCategoryIcon</a></li><li><a href="global.html#getFilterOptions">getFilterOptions</a></li><li><a href="global.html#getFilterStats">getFilterStats</a></li><li><a href="global.html#getMockCategories">getMockCategories</a></li><li><a href="global.html#getMockFilters">getMockFilters</a></li><li><a href="global.html#getMockProducts">getMockProducts</a></li><li><a href="global.html#getMockSearch">getMockSearch</a></li><li><a href="global.html#getProducts">getProducts</a></li><li><a href="global.html#handleCategoryFilterClick">handleCategoryFilterClick</a></li><li><a href="global.html#handleCheckboxFilterChange">handleCheckboxFilterChange</a></li><li><a href="global.html#handleClearAllFilters">handleClearAllFilters</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#initLazyLoading">initLazyLoading</a></li><li><a href="global.html#initializeActiveFiltersDisplay">initializeActiveFiltersDisplay</a></li><li><a href="global.html#initializeCategoryFilters">initializeCategoryFilters</a></li><li><a href="global.html#initializeConnectionMonitor">initializeConnectionMonitor</a></li><li><a href="global.html#initializeFilters">initializeFilters</a></li><li><a href="global.html#initializeSearchFilter">initializeSearchFilter</a></li><li><a href="global.html#initializeStatusFilters">initializeStatusFilters</a></li><li><a href="global.html#loadFallbackData">loadFallbackData</a></li><li><a href="global.html#loadProductData">loadProductData</a></li><li><a href="global.html#matchesCategory">matchesCategory</a></li><li><a href="global.html#matchesSearch">matchesSearch</a></li><li><a href="global.html#matchesStatusFilters">matchesStatusFilters</a></li><li><a href="global.html#matchesStockFilter">matchesStockFilter</a></li><li><a href="global.html#matchesTagFilters">matchesTagFilters</a></li><li><a href="global.html#mockRequest">mockRequest</a></li><li><a href="global.html#preloadCriticalResources">preloadCriticalResources</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#renderAllProducts">renderAllProducts</a></li><li><a href="global.html#renderFilteredProducts">renderFilteredProducts</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#resetFilterUI">resetFilterUI</a></li><li><a href="global.html#searchProducts">searchProducts</a></li><li><a href="global.html#showErrorMessage">showErrorMessage</a></li><li><a href="global.html#showLoadingState">showLoadingState</a></li><li><a href="global.html#showSkeletonLoading">showSkeletonLoading</a></li><li><a href="global.html#throttledRender">throttledRender</a></li><li><a href="global.html#updateActiveFiltersDisplay">updateActiveFiltersDisplay</a></li><li><a href="global.html#updateCategoryFilterButtons">updateCategoryFilterButtons</a></li><li><a href="global.html#updateConnectionStatus">updateConnectionStatus</a></li><li><a href="global.html#updateFilterStats">updateFilterStats</a></li><li><a href="global.html#updateStatistics">updateStatistics</a></li><li><a href="global.html#validateDOMElements">validateDOMElements</a></li><li><a href="global.html#warn">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 24 2025 00:36:51 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

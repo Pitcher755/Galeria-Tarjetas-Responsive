@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>🛍️ <span id="galeria-de-productos-responsive">Galería de Productos Responsive</span></h1>
+<h2>🔗 Navegación Rápida</h2>
+<p><strong>🇪🇸 <a href="#version-en-espanol">Ver en Español</a></strong> | <strong>🇺🇸 <a href="#english-version">Read in English</a></strong></p>
+<hr>
+<h2>🇪🇸 <span id="version-en-espanol">Versión en Español</span></h2>
+<h3>📋 Descripción</h3>
+<p>Este proyecto <strong>frontend</strong> implementa una galería de productos interactiva y <strong>responsive</strong>. El código original, que era monolítico, ha sido completamente refactorizado y <strong>modularizado</strong> para garantizar la <strong>escalabilidad</strong> y <strong>mantenibilidad</strong> del proyecto a largo plazo.</p>
+<p>El diseño de la aplicación se enfoca en la <strong>Separación de Responsabilidades</strong> (SoC), dividiendo la lógica de negocio, el estado, la interfaz de usuario y las utilidades en módulos independientes.</p>
+<h3>🛠️ Tecnologías Utilizadas</h3>
+<div align="center">
+<p><img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&amp;logo=css3&amp;logoColor=white" alt="CSS3">
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&amp;logo=javascript&amp;logoColor=black" alt="JavaScript">
+<img src="https://img.shields.io/badge/ES_Modules-6DA55F?style=for-the-badge&amp;logo=javascript&amp;logoColor=white" alt="ES Modules">
+<img src="https://img.shields.io/badge/JSDoc-4E5A65?style=for-the-badge&amp;logo=jsdoc&amp;logoColor=white" alt="JSDoc">
+<img src="https://img.shields.io/badge/Responsive-Design-2C8EBB?style=for-the-badge&amp;logo=web&amp;logoColor=white" alt="Responsive Design">
+<img src="https://img.shields.io/badge/A11Y-Enabled-2C8EBB?style=for-the-badge&amp;logo=accessibility&amp;logoColor=white" alt="Web Accessibility"></p>
+</div>
+<h3>🎯 Características Destacadas</h3>
+<ul>
+<li><strong>Arquitectura JavaScript Modular (ES Modules):</strong> El JS está estructurado en capas lógicas: <code>core/</code> (lógica de filtrado), <code>services/</code> (datos), <code>state/</code> (estado global), <code>ui/</code> (vista y eventos), y <code>utils/</code> (transversal).</li>
+<li><strong>CSS Modular y Sostenible:</strong> El CSS ha sido fragmentado en módulos por responsabilidad: <code>base/</code>, <code>layout/</code>, <code>components/</code> y <code>utilities/</code>, con <code>main.css</code> actuando como único punto de entrada para gestionar la cascada.</li>
+<li><strong>Documentación Completa (JSDoc):</strong> Todo el código JavaScript está rigurosamente documentado utilizando JSDoc, lo que facilita la comprensión de las funciones, el estado y el sistema de filtros.</li>
+<li><strong>Manejo de Entorno (CORS Fix):</strong> Implementación de un sistema de <strong>Mock/Fallback</strong> en <code>ProductService.js</code> que automáticamente utiliza datos locales en desarrollo, evitando errores de CORS.</li>
+<li><strong>Optimización de Rendimiento:</strong> Uso de <strong>throttling</strong> y <strong>debounce</strong> para el manejo eficiente de eventos de filtrado y búsqueda, además de <strong>lazy loading</strong> de imágenes.</li>
+<li><strong>Accesibilidad (A11y):</strong> Inclusión de semántica correcta, estilos para estados de enfoque (<code>:focus-visible</code>) y clases para lectores de pantalla (<code>.sr-only</code>).</li>
+<li><strong>Filtrado Combinado:</strong> Permite la búsqueda en tiempo real junto con múltiples filtros combinables por categoría, estado y disponibilidad de stock.</li>
+</ul>
+<h3>📁 Estructura Modular</h3>
+<p>La estructura de archivos refleja la arquitectura modular adoptada:</p>
+<pre class="prettyprint source"><code>product-gallery/
+├── index.html                  # Estructura principal (carga main.css y main.js)
+├── css/
+│   ├── base/                   # Estilos de etiquetas y tipografía (reset, global, typography) 
+│   ├── components/             # Módulos de UI reutilizables (card, filters, loading_states) 
+│   ├── layout/                 # Macro estructura de la página (container, main_sections) 
+│   ├── utilities/              # Configuración y helpers (variables, a11y, performance) 
+│   └── main.css                # Entry Point que importa todos los fragmentos CSS 
+├── js/
+│   ├── config/AppConfig.js     # Constantes y selectores 
+│   ├── core/FilterSystem.js    # Lógica de filtrado 
+│   ├── services/               # Carga de datos (ApiService, ProductService) 
+│   ├── state/AppState.js       # Estado global 
+│   ├── ui/                     # Renderizado y control de la UI (Renderer, FilterController) 
+│   ├── utils/                  # Utilidades transversales (Logger, Performance, ConnectionMonitor) 
+│   └── main.js                 # Orquestación y arranque de la aplicación 
+└── data/
+    └── cards.json              # Datos mock / Fallback
+</code></pre>
+<h3>🚀 Instalación y Ejecución</h3>
+<p>Para ejecutar el proyecto:</p>
+<ol>
+<li><strong>Clona</strong> el repositorio.</li>
+<li>Utiliza un <strong>servidor web local</strong> (necesario para la carga de ES Modules y <code>fetch</code> local), como Live Server de VS Code.</li>
+<li>Asegúrate de que el servidor esté ejecutándose en la raíz del proyecto.</li>
+<li>La aplicación se cargará utilizando el modo de desarrollo, extrayendo los datos directamente de <code>data/cards.json</code>.</li>
+</ol>
+<div align="center">
+<p><strong><a href="#galeria-de-productos-responsive">🔼 Volver al inicio</a></strong></p>
+</div>
+<hr>
+<h2>🇺🇸 <span id="english-version">English Version</span></h2>
+<h3>🛍️ Responsive Product Gallery</h3>
+<h3>📋 Description</h3>
+<p>This <strong>frontend</strong> project implements an interactive and responsive product gallery. The original monolithic code has been thoroughly refactored and <strong>modularized</strong> using the <strong>Separation of Concerns</strong> (SoC) principle to ensure the project's long-term <strong>scalability</strong> and <strong>maintainability</strong>.</p>
+<p>The application design focuses on modularity, separating business logic, state management, user interface control, and utilities into distinct modules.</p>
+<h3>🛠️ Technologies Used</h3>
+<div align="center">
+<p><img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&amp;logo=css3&amp;logoColor=white" alt="CSS3">
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&amp;logo=javascript&amp;logoColor=black" alt="JavaScript">
+<img src="https://img.shields.io/badge/ES_Modules-6DA55F?style=for-the-badge&amp;logo=javascript&amp;logoColor=white" alt="ES Modules">
+<img src="https://img.shields.io/badge/JSDoc-4E5A65?style=for-the-badge&amp;logo=jsdoc&amp;logoColor=white" alt="JSDoc">
+<img src="https://img.shields.io/badge/Responsive-Design-2C8EBB?style=for-the-badge&amp;logo=web&amp;logoColor=white" alt="Responsive Design">
+<img src="https://img.shields.io/badge/A11Y-Enabled-2C8EBB?style=for-the-badge&amp;logo=accessibility&amp;logoColor=white" alt="Web Accessibility"></p>
+</div>
+<h3>🎯 Key Features</h3>
+<ul>
+<li><strong>Modular JavaScript Architecture (ES Modules):</strong> JS is structured into logical layers: <code>core/</code> (filtering logic), <code>services/</code> (data fetching), <code>state/</code> (global state), <code>ui/</code> (view and events), and <code>utils/</code> (cross-cutting concerns).</li>
+<li><strong>Sustainable Modular CSS:</strong> The CSS has been fragmented into modules by responsibility: <code>base/</code>, <code>layout/</code>, <code>components/</code>, and <code>utilities/</code>, with <code>main.css</code> acting as the single entry point to manage the cascade.</li>
+<li><strong>Comprehensive Documentation (JSDoc):</strong> All JavaScript code is rigorously documented using JSDoc, making the functions, state, and filter system easier to understand.</li>
+<li><strong>Environment Management (CORS Fix):</strong> Implementation of a <strong>Mock/Fallback</strong> system within <code>ProductService.js</code> that automatically uses local data in development, bypassing common CORS errors in local environments.</li>
+<li><strong>Performance Optimization:</strong> Use of <strong>throttling</strong> and <strong>debounce</strong> for efficient handling of filtering and search events, plus <strong>lazy loading</strong> for images.</li>
+<li><strong>Accessibility (A11y):</strong> Includes correct semantics, styles for focus states (<code>:focus-visible</code>), and utility classes for screen readers (<code>.sr-only</code>).</li>
+<li><strong>Combined Filtering:</strong> Allows real-time search combined with multiple filters by category, status, and stock availability.</li>
+</ul>
+<h3>📁 Modular Structure</h3>
+<p>The file structure reflects the adopted modular architecture:</p>
+<pre class="prettyprint source"><code>product-gallery/
+├── index.html                  # Main structure (loads main.css and main.js)
+├── css/
+│   ├── base/                   # Tag and typography styles (reset, global, typography) 
+│   ├── components/             # Reusable UI modules (card, filters, loading_states) 
+│   ├── layout/                 # Main page structure (container, main_sections) 
+│   ├── utilities/              # Configuration and helpers (variables, a11y, performance) 
+│   └── main.css                # CSS Entry Point 
+├── js/
+│   ├── config/AppConfig.js     # Constants and selectors 
+│   ├── core/FilterSystem.js    # Filtering logic 
+│   ├── services/               # Data handling (ApiService, ProductService) 
+│   ├── state/AppState.js       # Global state 
+│   ├── ui/                     # Rendering and UI control (Renderer, FilterController) 
+│   ├── utils/                  # Cross-cutting functions (Logger, Performance, ConnectionMonitor) 
+│   └── main.js                 # Application orchestration and startup 
+└── data/
+    └── cards.json              # Mock / Fallback data
+</code></pre>
+<h3>🚀 Installation and Execution</h3>
+<p>To run the project:</p>
+<ol>
+<li><strong>Clone</strong> the repository.</li>
+<li>Use a <strong>local web server</strong> (required for ES Modules and local <code>fetch</code>), such as VS Code's Live Server.</li>
+<li>Make sure the server is running at the project root.</li>
+<li>The application will automatically load data from <code>data/cards.json</code> using the development (Mock) mode.</li>
+</ol>
+<div align="center">
+<p><strong><a href="#galeria-de-productos-responsive">🔼 Back to Top</a></strong></p>
+</div>
+<hr>
+<h2>📫 <span id="contacto">Contacto / Contact</span></h2>
+<div align="center">
+<h3>👨‍💻 <strong>Javier Fernández Guerra</strong></h3>
+<p><a href="https://www.linkedin.com/in/javier-fernandez-guerra-2a21b02b0/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" alt="LinkedIn"></a>
+<a href="https://substack.com/@javierfernndez959962"><img src="https://img.shields.io/badge/Substack-FF6719?style=for-the-badge&amp;logo=substack&amp;logoColor=white" alt="Substack"></a>
+<a href="https://x.com/JaviFGuerraDev"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&amp;logo=x&amp;logoColor=white" alt="X (Twitter)"></a>
+<a href="mailto:javi.fguerra@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&amp;logo=gmail&amp;logoColor=white" alt="Email"></a></p>
+</div></article>
+    </section>
+
+
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>app.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Función principal y orquestación de la galería de productos.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line11">line 11</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>config/AppConfig.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Configuración global de selectores, clases, filtros y endpoints.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_AppConfig.js.html">config/AppConfig.js</a>, <a href="config_AppConfig.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>core/FilterSystem.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Lógica central para aplicar y gestionar los filtros combinados.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_FilterSystem.js.html">core/FilterSystem.js</a>, <a href="core_FilterSystem.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>services/ApiService.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Servicio para manejar todas las comunicaciones con el backend, incluyendo mocks.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_ApiService.js.html">services/ApiService.js</a>, <a href="services_ApiService.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>services/ProductService.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Maneja la carga inicial de datos de productos y categorías, priorizando Mock/Fallback en desarrollo.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_ProductService.js.html">services/ProductService.js</a>, <a href="services_ProductService.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>state/AppState.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Define y gestiona el estado global de la aplicación.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="state_AppState.js.html">state/AppState.js</a>, <a href="state_AppState.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>ui/FilterController.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Maneja la inicialización de la UI de filtros y los eventos de interacción.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_FilterController.js.html">ui/FilterController.js</a>, <a href="ui_FilterController.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>ui/Renderer.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Funciones encargadas de generar HTML y renderizar la galería.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_Renderer.js.html">ui/Renderer.js</a>, <a href="ui_Renderer.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>ui/UIUpdates.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Funciones para modificar elementos visuales de la interfaz (estadísticas, filtros, mensajes).</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ui_UIUpdates.js.html">ui/UIUpdates.js</a>, <a href="ui_UIUpdates.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>utils/ConnectionMonitor.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Monitoreo del estado de conexión del usuario.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_ConnectionMonitor.js.html">utils/ConnectionMonitor.js</a>, <a href="utils_ConnectionMonitor.js.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>utils/Logger.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Utilidades para logging consistente en desarrollo.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_Logger.js.html">utils/Logger.js</a>, <a href="utils_Logger.js.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>utils/Performance.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Utilidades para optimizar el rendimiento (throttling, debouncing, lazy loading).</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_Performance.js.html">utils/Performance.js</a>, <a href="utils_Performance.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Logger.html">Logger</a></li><li><a href="PerformanceOptimizer.html">PerformanceOptimizer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ApiConfig">ApiConfig</a></li><li><a href="global.html#ApiService">ApiService</a></li><li><a href="global.html#AppConfig">AppConfig</a></li><li><a href="global.html#AppState">AppState</a></li><li><a href="global.html#FilterSystem">FilterSystem</a></li><li><a href="global.html#MockConfig">MockConfig</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#applyAllFilters">applyAllFilters</a></li><li><a href="global.html#applyAllFiltersAndRender">applyAllFiltersAndRender</a></li><li><a href="global.html#clearAllFilters">clearAllFilters</a></li><li><a href="global.html#createProductCard">createProductCard</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#generateStarRating">generateStarRating</a></li><li><a href="global.html#getCategories">getCategories</a></li><li><a href="global.html#getCategoryIcon">getCategoryIcon</a></li><li><a href="global.html#getFilterOptions">getFilterOptions</a></li><li><a href="global.html#getFilterStats">getFilterStats</a></li><li><a href="global.html#getMockCategories">getMockCategories</a></li><li><a href="global.html#getMockFilters">getMockFilters</a></li><li><a href="global.html#getMockProducts">getMockProducts</a></li><li><a href="global.html#getMockSearch">getMockSearch</a></li><li><a href="global.html#getProducts">getProducts</a></li><li><a href="global.html#handleCategoryFilterClick">handleCategoryFilterClick</a></li><li><a href="global.html#handleCheckboxFilterChange">handleCheckboxFilterChange</a></li><li><a href="global.html#handleClearAllFilters">handleClearAllFilters</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#initApp">initApp</a></li><li><a href="global.html#initLazyLoading">initLazyLoading</a></li><li><a href="global.html#initializeActiveFiltersDisplay">initializeActiveFiltersDisplay</a></li><li><a href="global.html#initializeCategoryFilters">initializeCategoryFilters</a></li><li><a href="global.html#initializeConnectionMonitor">initializeConnectionMonitor</a></li><li><a href="global.html#initializeFilters">initializeFilters</a></li><li><a href="global.html#initializeSearchFilter">initializeSearchFilter</a></li><li><a href="global.html#initializeStatusFilters">initializeStatusFilters</a></li><li><a href="global.html#loadFallbackData">loadFallbackData</a></li><li><a href="global.html#loadProductData">loadProductData</a></li><li><a href="global.html#matchesCategory">matchesCategory</a></li><li><a href="global.html#matchesSearch">matchesSearch</a></li><li><a href="global.html#matchesStatusFilters">matchesStatusFilters</a></li><li><a href="global.html#matchesStockFilter">matchesStockFilter</a></li><li><a href="global.html#matchesTagFilters">matchesTagFilters</a></li><li><a href="global.html#mockRequest">mockRequest</a></li><li><a href="global.html#preloadCriticalResources">preloadCriticalResources</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#renderAllProducts">renderAllProducts</a></li><li><a href="global.html#renderFilteredProducts">renderFilteredProducts</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#resetFilterUI">resetFilterUI</a></li><li><a href="global.html#searchProducts">searchProducts</a></li><li><a href="global.html#showErrorMessage">showErrorMessage</a></li><li><a href="global.html#showLoadingState">showLoadingState</a></li><li><a href="global.html#showSkeletonLoading">showSkeletonLoading</a></li><li><a href="global.html#throttledRender">throttledRender</a></li><li><a href="global.html#updateActiveFiltersDisplay">updateActiveFiltersDisplay</a></li><li><a href="global.html#updateCategoryFilterButtons">updateCategoryFilterButtons</a></li><li><a href="global.html#updateConnectionStatus">updateConnectionStatus</a></li><li><a href="global.html#updateFilterStats">updateFilterStats</a></li><li><a href="global.html#updateStatistics">updateStatistics</a></li><li><a href="global.html#validateDOMElements">validateDOMElements</a></li><li><a href="global.html#warn">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 24 2025 00:36:52 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

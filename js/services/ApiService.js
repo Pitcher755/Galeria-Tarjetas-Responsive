@@ -1,24 +1,18 @@
+import { AppConfig } from '../config/AppConfig.js';
+import { AppState } from '../state/AppState.js';
+import { Logger } from '../utils/Logger.js';
+
 /**
- * SERVICIO DE API PARA GALERÍA DE PRODUCTOS
- * 
- * @file api-service.js
- * @description Servicio para manejar todas las comunicaciones con el backend
- * @version 1.0.0
- * @author PitcherDev
- * 
- * @namespace ApiService
+ * @file ApiService.js
+ * @description Servicio para manejar todas las comunicaciones con el backend, incluyendo mocks.
  */
 
 /**
- * CONFIGURACIÓN DEL SERVICIO DE API
+ * @constant
  * @type {Object}
- * @property {string} baseURL - URL base de la API
- * @property {number} timeout - Timeout para requests (ms)
- * @property {Object} endpoints - Endpoints de la API
- * @property {Object} headers - Headers por defecto
  */
 const ApiConfig = {
-    baseURL: 'https://api.tutienda.com/v1', // ✅ URL de producción
+    baseURL: 'https://api.tutienda.com/v1',
     timeout: 10000,
     endpoints: {
         products: '/products',
@@ -33,31 +27,42 @@ const ApiConfig = {
 };
 
 /**
- * CONFIGURACIÓN PARA DESARROLLO (MOCK)
+ * @constant
  * @type {Object}
+ * @property {boolean} enabled - Si el mock está habilitado (debe ser true en dev local)
+ * @property {number} delay - Simulación de latencia de red (ms)
+ * @property {number} failRate - Porcentaje de fallos simulados
  */
-const MockConfig = {
-    enabled: true, // ✅ Cambiar a false en producción
-    delay: 300, // Simular latencia de red
-    failRate: 0.1 // % de requests que fallan (para testing)
+export const MockConfig = { // Exportamos MockConfig
+    enabled: true,
+    delay: 300,
+    failRate: 0.1
 };
 
 /**
- * SERVICIO PRINCIPAL DE API
+ * @constant
  * @type {Object}
  */
-const ApiService = {
+export const ApiService = {
+
     /**
-     * REALIZAR PETICIÓN HTTP
+     * @async
+     * @function request
+     * @description Realiza una petición HTTP, usando mock si está habilitado.
      * @param {string} url - URL del endpoint
-     * @param {Object} options - Opciones de fetch
+     * @param {Object} [options={}] - Opciones de fetch
      * @returns {Promise<Object>} Respuesta de la API
      */
     async request(url, options = {}) {
         const startTime = Date.now();
-
         try {
-            // ✅ Usar mock en desarrollo si está habilitado
+            // Cuando MockConfig.enabled es TRUE, no queremos intentar acceder a la URL real
+            // Sin embargo, esta función está diseñada para manejar peticiones de prod.
+
+            // Si la URL NO incluye 'http' (es decir, es un endpoint interno de Mock), la tratamos como mock.
+            // NOTA: Como 'ProductService.js' ahora decide si usar la API o no, 
+            // dejaremos esta lógica interna de 'request' intacta para URLs que no sean http,
+            // pero el ProductService evitará llamarla con URLs de prod si MockConfig.enabled es true.
             if (MockConfig.enabled && !url.includes('http')) {
                 return await this.mockRequest(url, options);
             }
@@ -79,10 +84,9 @@ const ApiService = {
 
             const data = await response.json();
             const duration = Date.now() - startTime;
-
             Logger.info(`🌐 API Request: ${url} (${duration}ms)`);
-            return data;
 
+            return data;
         } catch (error) {
             Logger.error(`❌ API Error: ${url}`, error);
             throw this.handleError(error);
@@ -90,16 +94,16 @@ const ApiService = {
     },
 
     /**
-     * SIMULAR PETICIÓN PARA DESARROLLO
+     * @async
+     * @function mockRequest
+     * @description Simula una petición a la API.
      * @param {string} endpoint - Endpoint a simular
-     * @param {Object} options - Opciones de la petición
+     * @param {Object} [options={}] - Opciones de la petición
      * @returns {Promise<Object>} Datos mock
      */
     async mockRequest(endpoint, options = {}) {
-        // Simular latencia de red
         await new Promise(resolve => setTimeout(resolve, MockConfig.delay));
 
-        // Simular fallos aleatorios para testing
         if (Math.random() < MockConfig.failRate) {
             throw new Error('Mock API Error: Simulated network failure');
         }
@@ -122,20 +126,23 @@ const ApiService = {
     },
 
     /**
-     * OBTENER PRODUCTOS DESDE API
-     * @param {Object} params - Parámetros de filtrado
-     * @returns {Promise<Array>} Lista de productos
+     * @async
+     * @function getProducts
+     * @description Construye la URL de productos para la API real.
+     * @param {Object} [params={}] - Parámetros de filtrado
+     * @returns {Promise<Object>} Lista de productos
      */
     async getProducts(params = {}) {
         const queryString = new URLSearchParams(params).toString();
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.products}?${queryString}`;
-
         return await this.request(url);
     },
 
     /**
-     * OBTENER CATEGORÍAS DESDE API
-     * @returns {Promise<Array>} Lista de categorías
+     * @async
+     * @function getCategories
+     * @description Construye la URL de categorías para la API real.
+     * @returns {Promise<Object>} Lista de categorías
      */
     async getCategories() {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.categories}`;
@@ -143,10 +150,12 @@ const ApiService = {
     },
 
     /**
-     * BUSCAR PRODUCTOS
+     * @async
+     * @function searchProducts
+     * @description Busca productos en la API real.
      * @param {string} query - Término de búsqueda
-     * @param {Object} filters - Filtros adicionales
-     * @returns {Promise<Array>} Productos encontrados
+     * @param {Object} [filters={}] - Filtros adicionales
+     * @returns {Promise<Object>} Productos encontrados
      */
     async searchProducts(query, filters = {}) {
         const url = `${ApiConfig.baseURL}${ApiConfig.endpoints.search}`;
@@ -157,7 +166,9 @@ const ApiService = {
     },
 
     /**
-     * OBTENER OPCIONES DE FILTRO
+     * @async
+     * @function getFilterOptions
+     * @description Obtiene opciones de filtrado.
      * @returns {Promise<Object>} Opciones de filtrado disponibles
      */
     async getFilterOptions() {
@@ -166,7 +177,8 @@ const ApiService = {
     },
 
     /**
-     * MANEJO DE ERRORES DE API
+     * @function handleError
+     * @description Formatea errores de fetch y timeout.
      * @param {Error} error - Error original
      * @returns {Error} Error formateado
      */
@@ -174,21 +186,21 @@ const ApiService = {
         if (error.name === 'AbortError') {
             return new Error('Request timeout: La conexión tardó demasiado tiempo');
         }
-
         if (error.message.includes('Failed to fetch')) {
             return new Error('Error de conexión: Verifica tu conexión a internet');
         }
-
         return error;
     },
 
     /**
-     * DATOS MOCK PARA DESARROLLO
+     * @function getMockProducts
+     * @description Retorna datos mock de productos.
+     * @returns {Object} Datos mock
      */
     getMockProducts() {
         return {
             success: true,
-            data: AppState.products, // Usar datos existentes
+            data: AppState.products,
             pagination: {
                 total: AppState.products.length,
                 page: 1,
@@ -199,6 +211,11 @@ const ApiService = {
         };
     },
 
+    /**
+     * @function getMockCategories
+     * @description Retorna datos mock de categorías.
+     * @returns {Object} Datos mock
+     */
     getMockCategories() {
         return {
             success: true,
@@ -207,15 +224,18 @@ const ApiService = {
         };
     },
 
+    /**
+     * @function getMockSearch
+     * @param {string} body - JSON string con la consulta
+     * @returns {Object} Datos mock
+     */
     getMockSearch(body) {
         const searchParams = JSON.parse(body || '{}');
         const query = searchParams.query?.toLowerCase() || '';
-
         const filteredProducts = AppState.products.filter(product =>
             product.title.toLowerCase().includes(query) ||
             product.description.toLowerCase().includes(query)
         );
-
         return {
             success: true,
             data: filteredProducts,
@@ -225,6 +245,10 @@ const ApiService = {
         };
     },
 
+    /**
+     * @function getMockFilters
+     * @returns {Object} Datos mock
+     */
     getMockFilters() {
         return {
             success: true,

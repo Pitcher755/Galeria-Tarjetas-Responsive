@@ -1,0 +1,35 @@
+/*
+====================================
+1. UTILITIES: Variables, Helpers, A11y
+====================================
+*/
+@import url("./utilities/_variables.css");
+@import url("./utilities/_a11y.css");
+@import url("./utilities/_helpers.css");
+
+/*
+====================================
+2. BASE: Reset y Global
+====================================
+*/
+@import url("./base/_reset.css");
+@import url("./base/_global.css");
+@import url("./base/_typography.css");
+
+/*
+====================================
+3. LAYOUT: Contenedores y Secciones Principales
+====================================
+*/
+@import url("./layout/_container.css");
+@import url("./layout/_main_sections.css");
+
+/*
+====================================
+4. COMPONENTS: Módulos Reutilizables
+====================================
+*/
+@import url("./components/_loading_states.css");
+@import url("./components/_filters.css");
+@import url("./components/_card.css");
+@import url("./components/_pagination.css");
