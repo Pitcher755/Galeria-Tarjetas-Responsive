@@ -4,35 +4,44 @@ import { AppState } from '../state/AppState.js';
 import { Logger } from '../utils/Logger.js';
 
 /**
- * ACTUALIZACIÓN DE ESTADÍSTICAS
+ * @file UIUpdates.js
+ * @description Funciones para modificar elementos visuales de la interfaz (estadísticas, filtros, mensajes).
+ */
+
+/**
+ * @function updateStatistics
+ * @description Actualiza las estadísticas mostradas en la interfaz (total y visible).
+ * @returns {void}
  */
 export function updateStatistics() {
     const totalElement = document.querySelector(AppConfig.selectors.totalProducts);
     const visibleElement = document.querySelector(AppConfig.selectors.visibleProducts);
-    const summaryElement = document.querySelector(AppConfig.selectors.gallerySummary); // [43]
+    const summaryElement = document.querySelector(AppConfig.selectors.gallerySummary);
 
     if (totalElement) {
         totalElement.textContent = AppState.products.length;
     }
+
     if (visibleElement) {
         visibleElement.textContent = AppState.filteredProducts.length;
     }
 
     if (summaryElement) {
         summaryElement.innerHTML = `
-            Mostrando *${AppState.filteredProducts.length}* 
+            Mostrando *${AppState.filteredProducts.length}*
             de *${AppState.products.length}* productos
-        `; // [43, 44]
+        `;
     }
 }
 
 /**
- * ACTUALIZAR ESTADÍSTICAS DE FILTROS
+ * @function updateFilterStats
+ * @description Actualiza el contador de filtros activos y el botón de limpiar filtros.
+ * @returns {void}
  */
 export function updateFilterStats() {
     const filterStats = document.querySelector(AppConfig.selectors.filterStats);
-    const clearFiltersBtn = document.querySelector(AppConfig.selectors.clearFilters); // [45]
-
+    const clearFiltersBtn = document.querySelector(AppConfig.selectors.clearFilters);
     const filterStatsData = FilterSystem.getFilterStats();
 
     if (filterStats) {
@@ -44,32 +53,37 @@ export function updateFilterStats() {
 
     if (clearFiltersBtn) {
         clearFiltersBtn.style.display =
-            filterStatsData.total > 0 ? "block" : "none"; // [45, 46]
+            filterStatsData.total > 0 ? "block" : "none";
     }
 }
 
 /**
- * MOSTRAR ESTADO DE CARGA
+ * @function showLoadingState
+ * @description Muestra el estado de carga en la interfaz y oculta el estado vacío.
+ * @returns {void}
  */
 export function showLoadingState() {
     const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
-    const emptyState = document.querySelector(AppConfig.selectors.emptyState); // [44]
+    const emptyState = document.querySelector(AppConfig.selectors.emptyState);
 
     if (loadingElement) {
         loadingElement.classList.remove(AppConfig.classes.hidden);
     }
 
     if (emptyState) {
-        emptyState.classList.add(AppConfig.classes.hidden); // [44]
+        emptyState.classList.add(AppConfig.classes.hidden);
     }
 }
 
 /**
- * MOSTRAR MENSAJES DE ERROR AL USUARIO
+ * @function showErrorMessage
+ * @description Muestra un mensaje de error crítico al usuario.
+ * @param {string} message - Mensaje de error a mostrar
+ * @returns {void}
  */
 export function showErrorMessage(message) {
     const container = document.querySelector(AppConfig.selectors.cardContainer);
-    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement); // [47]
+    const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
 
     if (loadingElement) {
         loadingElement.classList.add(AppConfig.classes.hidden);
@@ -77,45 +91,48 @@ export function showErrorMessage(message) {
 
     if (container) {
         container.innerHTML = `
-            <div class="error-state">
+            <div class="error-message">
                 <p>${message}</p>
-                <button onclick="window.location.reload()">Reintentar</button>
+                <button class="retry-btn" onclick="window.location.reload()">Reintentar</button>
             </div>
-        `; // [48]
+        `;
     }
 }
 
 /**
- * ACTUALIZAR BOTONES DE FILTRO DE CATEGORÍA
+ * @function updateCategoryFilterButtons
+ * @description Actualiza el estado visual de los botones de categoría (clase 'active').
+ * @param {HTMLElement} activeButton - Botón activo actualmente
+ * @returns {void}
  */
 export function updateCategoryFilterButtons(activeButton) {
-    const allButtons = document.querySelectorAll('[data-filter-type="category"]'); // [46]
+    const allButtons = document.querySelectorAll('[data-filter-type="category"]');
+
     allButtons.forEach((button) => {
         const isActive = button === activeButton;
         button.classList.toggle(AppConfig.classes.active, isActive);
-        button.setAttribute("aria-pressed", isActive.toString()); // [49]
+        button.setAttribute("aria-pressed", isActive.toString());
     });
 }
 
 /**
- * RESETEAR INTERFAZ DE FILTROS
+ * @function resetFilterUI
+ * @description Restablece la interfaz de usuario de filtros a su estado inicial.
+ * @returns {void}
  */
 export function resetFilterUI() {
-    // Resetear botones de categoría [49]
     const categoryButtons = document.querySelectorAll('[data-filter-type="category"]');
     categoryButtons.forEach((button) => {
         const isAll = button.dataset.category === "all";
         button.classList.toggle(AppConfig.classes.active, isAll);
-        button.setAttribute("aria-pressed", isAll.toString()); // [50]
+        button.setAttribute("aria-pressed", isAll.toString());
     });
 
-    // Resetear checkboxes [50]
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     checkboxes.forEach((checkbox) => {
         checkbox.checked = false;
     });
 
-    // Resetear búsqueda [50]
     const searchInput = document.querySelector(AppConfig.selectors.searchInput);
     if (searchInput) {
         searchInput.value = "";
@@ -123,9 +140,10 @@ export function resetFilterUI() {
 }
 
 /**
- * ACTUALIZAR VISUALIZACIÓN DE FILTROS ACTIVOS (Placeholder)
+ * @function updateActiveFiltersDisplay
+ * @description Actualiza la visualización de los filtros activos (Placeholder).
+ * @returns {void}
  */
 export function updateActiveFiltersDisplay() {
-    // Esta función se implementará en mejoras futuras [48]
     Logger.info("Actualizando visualización de filtros activos");
 }

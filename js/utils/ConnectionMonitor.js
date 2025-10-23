@@ -1,35 +1,43 @@
 import { Logger } from './Logger.js';
 
 /**
- * Función para manejo de estado de conexión
+ * @file ConnectionMonitor.js
+ * @description Monitoreo del estado de conexión del usuario.
+ */
+
+/**
+ * @function updateConnectionStatus
+ * @param {boolean} isOnline
+ * @returns {void}
  */
 export function updateConnectionStatus(isOnline) {
     const statusElement = document.getElementById('connection-status');
     if (!statusElement) return;
 
     if (isOnline) {
-        statusElement.textContent = '✅ Conectado'; // [29]
+        statusElement.textContent = '✅ Conectado';
         statusElement.className = 'connection-status online';
     } else {
         statusElement.textContent = '⚠️ Sin conexión - Modo offline';
-        statusElement.className = 'connection-status offline'; // [29]
+        statusElement.className = 'connection-status offline';
     }
 }
 
 /**
- * Listeners para estado de conexión
+ * @function initializeConnectionMonitor
+ * @description Inicializa los listeners para el estado de conexión (online/offline).
+ * @returns {void}
  */
 export function initializeConnectionMonitor() {
     window.addEventListener('online', () => {
-        Logger.info('🌐 Conexión restaurada'); // [29]
+        Logger.info('🌐 Conexión restaurada');
         updateConnectionStatus(true);
     });
 
     window.addEventListener('offline', () => {
-        Logger.warn('🌐 Sin conexión - Modo offline activado'); // [29]
+        Logger.warn('🌐 Sin conexión - Modo offline activado');
         updateConnectionStatus(false);
     });
 
-    // Estado inicial
-    updateConnectionStatus(navigator.onLine); // [30]
+    updateConnectionStatus(navigator.onLine);
 }

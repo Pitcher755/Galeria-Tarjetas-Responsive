@@ -9,25 +9,28 @@ import { Logger } from './utils/Logger.js';
 import { PerformanceOptimizer } from './utils/Performance.js';
 
 /**
- * BUCLE DE APLICACIÓN: Aplica todos los filtros y renderiza
- * Esta función orquesta la lógica central (FilterSystem) y la vista (Renderer/UIUpdates).
+ * @file app.js
+ * @description Función principal y orquestación de la galería de productos.
+ */
+
+/**
+ * @function applyAllFiltersAndRender
+ * @description Aplica todos los filtros al estado de productos y ejecuta el renderizado optimizado.
+ * @returns {void}
  */
 function applyAllFiltersAndRender() {
-    const container = document.querySelector(AppConfig.selectors.cardContainer);
     const gallery = document.querySelector('.gallery');
 
     if (gallery) {
         gallery.classList.add('filtering');
     }
 
-    // 1. Aplicar lógica de negocio
-    AppState.filteredProducts = FilterSystem.applyAllFilters(AppState.products); // [62]
+    AppState.filteredProducts = FilterSystem.applyAllFilters(AppState.products);
 
-    // 2. Ejecutar renderizado optimizado
     PerformanceOptimizer.throttledRender(() => {
-        renderFilteredProducts(); // [62]
-        updateStatistics(); // [62]
-        updateFilterStats(); // [62]
+        renderFilteredProducts();
+        updateStatistics();
+        updateFilterStats();
 
         if (gallery) {
             setTimeout(() => gallery.classList.remove('filtering'), 300);
@@ -35,54 +38,55 @@ function applyAllFiltersAndRender() {
     });
 }
 
-
 /**
- * VALIDACIÓN DE ELEMENTOS DEL DOM
+ * @function validateDOMElements
+ * @description Verifica que todos los elementos DOM requeridos existan.
+ * @returns {boolean}
  */
 function validateDOMElements() {
     const requiredSelectors = Object.values(AppConfig.selectors);
     const missingElements = requiredSelectors.filter((selector) => {
-        return !document.querySelector(selector); // [63]
+        return !document.querySelector(selector);
     });
 
     if (missingElements.length > 0) {
-        Logger.warn(`Elementos DOM no encontrados: ${missingElements.join(", ")}`); // [63]
+        Logger.warn(`Elementos DOM no encontrados: ${missingElements.join(", ")}`);
         return false;
     }
-    return true; // [17]
+    return true;
 }
 
-
 /**
- * INICIALIZACIÓN DE LA APLICACIÓN
+ * @async
+ * @function initApp
+ * @description Función principal que inicializa toda la aplicación.
+ * @returns {void}
  */
 async function initApp() {
-    Logger.info("Inicializando aplicación..."); // [64]
+    Logger.info("Inicializando aplicación...");
+
     try {
         if (!validateDOMElements()) {
-            throw new Error("Elementos del DOM requeridos no encontrados"); // [64]
+            throw new Error("Elementos del DOM requeridos no encontrados");
         }
 
-        showLoadingState(); // [64]
-        showSkeletonLoading(); // [64]
-        PerformanceOptimizer.preloadCriticalResources(); // [64]
+        showLoadingState();
+        showSkeletonLoading();
+        PerformanceOptimizer.preloadCriticalResources();
 
-        // Cargar datos
-        await loadProductData(); // [64]
+        await loadProductData();
 
-        // Inicializar filtros y pasar la función de renderizado central
-        initializeFilters(applyAllFiltersAndRender); // [64]
+        initializeFilters(applyAllFiltersAndRender);
 
-        // Renderizar inicial
-        renderAllProducts(); // [64]
+        renderAllProducts();
+        updateStatistics(); // Llamada inicial crucial para corregir el error de conteo.
 
         Logger.info("✅ Aplicación inicializada correctamente");
 
     } catch (error) {
-        Logger.error("Error durante la inicialización:", error); // [64]
-        showErrorMessage("Error al cargar la galería, Por favor, recargue la página."); // [62, 64]
+        Logger.error("Error durante la inicialización:", error);
+        showErrorMessage("Error al cargar la galería, Por favor, recargue la página.");
     }
 }
 
-// EVENTO DE INICIALIZACIÓN CUANDO EL DOM ESTÁ LISTO
 document.addEventListener("DOMContentLoaded", initApp);

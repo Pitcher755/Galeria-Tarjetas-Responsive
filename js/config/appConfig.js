@@ -1,28 +1,37 @@
 /**
- * CONFIGURACIÓN GLOBAL DE LA APLICACIÓN
+ * @file AppConfig.js
+ * @description Configuración global de selectores, clases, filtros y endpoints.
  */
 
+/**
+ * @constant
+ * @type {Object}
+ * @property {string} version
+ * @property {boolean} debugMode
+ * @property {Object} selectors - Selectores CSS
+ * @property {Object} classes - Clases CSS dinámicas
+ * @property {Object} filters - Opciones de filtros predefinidas
+ * @property {Object} endpoints - URLs para obtener datos
+ */
 export const AppConfig = {
-    version: "1.0.0", // [3]
-    debugMode: true, // [3]
-
+    version: "1.0.0",
+    debugMode: true,
     selectors: {
-        cardContainer: "#card-container", // [3]
-        filtersContainer: "#filters-container", // [3]
+        cardContainer: "#card-container",
+        filtersContainer: "#filters-container",
         loadingElement: "#loading",
         emptyState: "#empty-state",
         resetFilters: "#reset-filters",
         totalProducts: "#total-products",
         visibleProducts: "#visible-products",
-        gallerySummary: "#gallery-summary", // [3]
+        gallerySummary: "#gallery-summary",
         searchInput: "#product-search",
         filterStatus: "#filter-status",
         clearFilters: "#clear-filters",
-        filterStats: "#filter-stats", // [4]
+        filterStats: "#filter-stats",
     },
-
     classes: {
-        hidden: "hidden", // [4]
+        hidden: "hidden",
         active: "active",
         card: "card",
         filterBtn: "filter-btn",
@@ -30,23 +39,21 @@ export const AppConfig = {
         outOfStock: "card--out-of-stock",
         filterActive: "filter-active",
         filterTag: "filter-tag",
-        filterCount: "filter-count", // [4]
+        filterCount: "filter-count",
     },
-
     filters: {
         statusOptions: [
             { id: "featured", name: "Destacados", icon: "⭐" },
             { id: "new", name: "Nuevos", icon: "🆕" },
             { id: "discount", name: "En oferta", icon: "💸" },
-        ], // [4]
+        ],
         tagOptions: [
             { id: "popular", name: "Populares", icon: "🔥" },
             { id: "nuevo", name: "Nuevo", icon: "🎉" },
             { id: "oferta", name: "Oferta", icon: "💰" },
-        ], // [5]
+        ],
     },
-
     endpoints: {
-        products: "./data/cards.json", // [5]
+        products: "./data/cards.json",
     },
 };

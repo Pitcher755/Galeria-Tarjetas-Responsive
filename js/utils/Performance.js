@@ -1,13 +1,24 @@
 /**
- * SISTEMA DE OPTIMIZACIÓN DE RENDIMIENTO
+ * @file Performance.js
+ * @description Utilidades para optimizar el rendimiento (throttling, debouncing, lazy loading).
+ */
+
+/**
+ * @constant
+ * @namespace PerformanceOptimizer
+ * @property {boolean} isThrottled
+ * @property {number} lastRenderTime
+ * @property {number} renderDelay - Retraso mínimo para renderizado (en ms)
  */
 export const PerformanceOptimizer = {
     isThrottled: false,
     lastRenderTime: 0,
-    renderDelay: 16, // [16]
+    renderDelay: 16,
 
     /**
-     * RENDERIZADO CON THROTTLE
+     * @function throttledRender
+     * @param {Function} callback - Función a ejecutar
+     * @returns {void}
      */
     throttledRender(callback) {
         if (this.isThrottled) {
@@ -21,13 +32,17 @@ export const PerformanceOptimizer = {
 
         this.isThrottled = true;
         callback();
+
         setTimeout(() => {
             this.isThrottled = false;
-        }, this.renderDelay); // [26]
+        }, this.renderDelay);
     },
 
     /**
-     * DEBOUNCE PARA BÚSQUEDAS
+     * @function debounce
+     * @param {Function} func - Función a debounce
+     * @param {number} wait - Tiempo de espera (ms)
+     * @returns {Function} Función debounced
      */
     debounce(func, wait) {
         let timeout;
@@ -37,12 +52,14 @@ export const PerformanceOptimizer = {
                 func(...args);
             };
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait); // [27]
+            timeout = setTimeout(later, wait);
         };
     },
 
     /**
-     * LAZY LOADING DE IMÁGENES
+     * @function initLazyLoading
+     * @description Configura el Lazy Loading para imágenes con la clase 'card__image'.
+     * @returns {void}
      */
     initLazyLoading() {
         const images = document.querySelectorAll('.card__image[loading="lazy"]');
@@ -54,22 +71,24 @@ export const PerformanceOptimizer = {
                         img.src = img.dataset.src;
                         img.classList.remove("loading");
                     }
-                    imageObserver.unobserve(img); // [28]
+                    imageObserver.unobserve(img);
                 }
             });
         });
+
         images.forEach((img) => imageObserver.observe(img));
     },
 
     /**
-     * PRELOAD DE RECURSOS CRÍTICOS
+     * @function preloadCriticalResources
+     * @description Precarga recursos críticos (ej. fuentes o iconos).
+     * @returns {void}
      */
     preloadCriticalResources() {
-        // Preload de fuentes / recursos críticos [28]
         const link = document.createElement("link");
         link.rel = "preload";
         // URL de ejemplo de recurso crítico:
-        link.href = 'data:image/svg+xml,...';
+        link.href = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E';
         link.as = "image";
         document.head.appendChild(link);
     }

@@ -4,45 +4,51 @@ import { Logger } from '../utils/Logger.js';
 import { PerformanceOptimizer } from '../utils/Performance.js';
 
 /**
- * RENDERIZADO DE TODOS LOS PRODUCTOS
+ * @file Renderer.js
+ * @description Funciones encargadas de generar HTML y renderizar la galería.
+ */
+
+/**
+ * @function renderAllProducts
+ * @description Inicializa la lista de productos filtrados con todos los productos y renderiza.
+ * @returns {void}
  */
 export function renderAllProducts() {
-    Logger.info("Renderizando todos los productos..."); // [33]
+    Logger.info("Renderizando todos los productos...");
     AppState.filteredProducts = [...AppState.products];
-    renderFilteredProducts(); // [33]
-    // La actualización de estadísticas se hará en main.js o UIUpdates.js
+    renderFilteredProducts();
 }
 
 /**
- * RENDERIZADO DE PRODUCTOS FILTRADOS
+ * @function renderFilteredProducts
+ * @description Renderiza los productos actualmente en AppState.filteredProducts.
+ * @returns {void}
  */
 export function renderFilteredProducts() {
-    const container = document.querySelector(AppConfig.selectors.cardContainer); // [33]
+    const container = document.querySelector(AppConfig.selectors.cardContainer);
     const loadingElement = document.querySelector(AppConfig.selectors.loadingElement);
-    const emptyState = document.querySelector(AppConfig.selectors.emptyState); // [34]
+    const emptyState = document.querySelector(AppConfig.selectors.emptyState);
 
-    // Ocultar loading
     if (loadingElement) {
         loadingElement.classList.add(AppConfig.classes.hidden);
     }
 
-    // Mostrar estado vacío si no hay productos
     if (AppState.filteredProducts.length === 0) {
         if (emptyState) {
             emptyState.classList.remove(AppConfig.classes.hidden);
         }
-        container.innerHTML = ""; // [34]
+        container.innerHTML = "";
         return;
     }
 
-    // Ocultar estado vacío [34]
     if (emptyState) {
         emptyState.classList.add(AppConfig.classes.hidden);
     }
 
-    // Generar y renderizar tarjetas [35]
     const fragment = document.createDocumentFragment();
     const tempContainer = document.createElement('div');
+
+    // Usar la función helper para crear las tarjetas
     tempContainer.innerHTML = AppState.filteredProducts.map(product => createProductCard(product)).join("");
 
     while (tempContainer.firstChild) {
@@ -52,27 +58,25 @@ export function renderFilteredProducts() {
     container.innerHTML = "";
     container.appendChild(fragment);
 
-    PerformanceOptimizer.initLazyLoading(); // [35]
-    Logger.info(`✅ ${AppState.filteredProducts.length} productos renderizados`); // [35]
+    PerformanceOptimizer.initLazyLoading();
+    Logger.info(`✅ ${AppState.filteredProducts.length} productos renderizados`);
 }
 
 /**
- * CREACIÓN DE TARJETA DE PRODUCTO
- *
  * @function createProductCard
- * @description Crea el HTML para una tarjeta de producto
+ * @description Crea el HTML para una tarjeta de producto.
  * @param {Object} product - Datos del producto
- * @param {number} product.id - ID único del producto
- * @param {string} product.title - Título del producto
- * @param {string} product.category - Categoría del producto
- * @param {number} product.price - Precio actual
- * @param {number} [product.originalPrice] - Precio original
- * @param {string} product.description - Descripción del producto
- * @param {string} product.image - URL de la imagen
- * @param {number} product.rating - Calificación del producto
- * @param {number} product.reviewCount - Número de reseñas
- * @param {number} product.stock - Cantidad en stock
- * @param {boolean} product.featured - Si es producto destacado
+ * @param {number} product.id
+ * @param {string} product.title
+ * @param {string} product.category
+ * @param {number} product.price
+ * @param {number} [product.originalPrice]
+ * @param {string} product.description
+ * @param {string} product.image
+ * @param {number} product.rating
+ * @param {number} product.reviewCount
+ * @param {number} product.stock
+ * @param {boolean} product.featured
  * @returns {string} HTML de la tarjeta
  */
 function createProductCard(product) {
@@ -80,11 +84,9 @@ function createProductCard(product) {
     const discountPercent = hasDiscount
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
-
     const isOutOfStock = product.stock === 0;
     const isNew = product.tags && product.tags.includes("nuevo");
 
-    // Determinar clases CSS
     const cardClasses = [
         AppConfig.classes.card,
         product.featured ? AppConfig.classes.featured : "",
@@ -92,72 +94,43 @@ function createProductCard(product) {
     ].filter(Boolean).join(" ");
 
     return `
-    <article class="${cardClasses}"
-            data-category="${product.category}"
-            data-id="${product.id}"
+        <article class="${cardClasses}" 
+            data-category="${product.category}" 
+            data-id="${product.id}" 
             aria-labelledby="product-title-${product.id}">
-
-            ${isNew ? '<span class="card__new-badge" aria-label="Producto nuevo">🆕 Nuevo</span>' : ""}
-        
-        <!-- Contenedor de imagen -->
-        <div class="card__image-container">
-            <img data-src="${product.image}"
-                alt="${product.title}"
-                class="card__image loading"
-                loading="lazy"
-                decoding="async">
-
-            <!-- Badge de categoría -->
-            <span class="card__badge" aria-label="Categoría: ${product.category}">
-                ${getCategoryIcon(product.category)}
-            </span>
-
-            <!-- Badge de descuento -->
-            ${hasDiscount ? `
-                <span class="card__discount" aria-label="Descuento del ${discountPercent}%">
-                    -${discountPercent}%
-                </span>
-                ` : ""}
-        </div>
-        
-        <!-- Contenido de la tarjeta -->
-        <div class="card__content">
-            <h3 class="card__title" id="product-title-${product.id}">
-                ${product.title}
-            </h3>
-
-            <p class="card__description">
-                ${product.description}
-            </p>
-
-            <!-- Rating -->
-            <div class="card__rating" aria-label="Calificación: ${product.rating} de 5 estrellas">
-                <span class="rating__stars" aria-hidden="true">
-                    ${generateStarRating(product.rating)}
-                </span>
-                <span class="rating__text">
-                    ${product.rating} (${product.reviewCount} reseñas)
-                </span>
+            
+            <div class="card__image-container">
+                ${isNew ? '<span class="card__new-badge">🆕 Nuevo</span>' : ""}
+                ${product.featured ? '<span class="card__badge">⭐ Destacado</span>' : ""}
+                <img 
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                    data-src="${product.image}" 
+                    alt="${product.title}"
+                    class="card__image loading"
+                    loading="lazy"
+                    decoding="async">
             </div>
-        </div>
-        
-        <!-- Pie de tarjeta -->
-        <div class="card__footer">
-                <div class="price-container">
-                    ${hasDiscount ? `
-                        <span class="card__original-price" aria-hidden="true">
-                            €${product.originalPrice.toFixed(2)}
-                        </span>
-                        ` : ""}
-                        <span class="card__price" aria-label="Precio: €${product.price.toFixed(2)}">
-                            €${product.price.toFixed(2)}
-                        </span>
-                </div>
 
-                <div class="stock-info">
-                    <span class="stock-badge ${isOutOfStock ? "out-of-stock" : "in-stock"}">
-                        ${isOutOfStock ? "❌ Agotado" : `✅ ${product.stock} en stock`}
-                    </span>
+            ${hasDiscount ? `<span class="card__discount">-${discountPercent}%</span>` : ""}
+
+            <div class="card__content">
+                <h3 id="product-title-${product.id}" class="card__title">
+                    ${product.title}
+                </h3>
+                <p class="card__description">${product.description}</p>
+                <div class="card__rating">
+                    <span class="rating__stars">${generateStarRating(product.rating)}</span>
+                    <span class="rating__text">${product.rating} (${product.reviewCount} reseñas)</span>
+                </div>
+            </div>
+
+            <div class="card__footer">
+                <div class="price-container">
+                    ${hasDiscount ? `<span class="card__original-price">€${product.originalPrice.toFixed(2)}</span>` : ""}
+                    <span class="card__price">€${product.price.toFixed(2)}</span>
+                </div>
+                <div class="stock-info ${isOutOfStock ? 'stock-badge out-of-stock' : 'stock-badge in-stock'}">
+                    ${isOutOfStock ? "❌ Agotado" : `✅ ${product.stock} en stock`}
                 </div>
             </div>
         </article>
@@ -165,10 +138,7 @@ function createProductCard(product) {
 }
 
 /**
- * GENERACIÓN DE RATING CON ESTRELLAS
- *
  * @function generateStarRating
- * @description Genera el HTML para mostrar el rating con estrellas
  * @param {number} rating - Calificación del producto (0-5)
  * @returns {string} HTML de las estrellas
  */
@@ -176,17 +146,13 @@ function generateStarRating(rating) {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
     return (
         "⭐".repeat(fullStars) + (hasHalfStar ? "✨" : "") + "☆".repeat(emptyStars)
     );
 }
 
 /**
- * OBTENCIÓN DE ICONO DE CATEGORÍA
- *
  * @function getCategoryIcon
- * @description Devuelve el icono correspondiente en una categoría
  * @param {string} category - ID de la categoría
  * @returns {string} Icono de la categoría
  */
@@ -196,24 +162,25 @@ function getCategoryIcon(category) {
 }
 
 /**
- * MOSTRAR SKELETON LOADING
+ * @function showSkeletonLoading
+ * @description Muestra esqueletos de carga mientras se cargan los productos.
+ * @returns {void}
  */
 export function showSkeletonLoading() {
     const container = document.querySelector(AppConfig.selectors.cardContainer);
-    if (!container) return; // [41]
+    if (!container) return;
+
     const skeletonCount = 8;
     const skeletonsHTML = Array.from({ length: skeletonCount }, () => `
-        <div class="card__image-container skeleton skeleton-image"></div>
+        <div class="card skeleton-card">
+            <div class="skeleton-image skeleton"></div>
             <div class="card__content">
-                <div class="skeleton skeleton-text skeleton-text--short"></div>
-                <div class="skeleton skeleton-text skeleton-text--medium"></div>
-                <div class="skeleton skeleton-text" style=width: 40%></div>
-            </div>
-            <div class="card__footer">
-                <div class="skeleton skeleton-text" style="width: 30%"></div>
-                <div class="skeleton skeleton-text" style="width: 20%"></div>
+                <div class="skeleton-text skeleton skeleton-text--medium"></div>
+                <div class="skeleton-text skeleton skeleton-text--short"></div>
+                <div class="skeleton-text skeleton"></div>
             </div>
         </div>
-    `).join(""); // [42]
+    `).join("");
+
     container.innerHTML = skeletonsHTML;
 }

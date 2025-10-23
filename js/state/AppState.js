@@ -1,10 +1,19 @@
 /**
- * ESTADO GLOBAL DE LA APLICACIÓN
+ * @file AppState.js
+ * @description Define y gestiona el estado global de la aplicación.
  */
 
+/**
+ * @constant
+ * @type {Object}
+ * @property {Array} products - Lista de todos los productos
+ * @property {Array} categories - Lista de categorías disponibles
+ * @property {Array} filteredProducts - Productos filtrados actualmente
+ * @property {string} currentFilter - Filtro activo actual (a nivel general)
+ */
 export const AppState = {
-    products: [], // Lista de todos los productos cargados [5]
-    categories: [], // Lista de categorías disponibles [5]
-    filteredProducts: [], // Productos filtrados actualmente [5]
-    currentFilter: "all", // [7]
+    products: [],
+    categories: [],
+    filteredProducts: [],
+    currentFilter: "all",
 };
