@@ -1,0 +1,14 @@
+/* LAYOUT: CONTENEDORES RESPONSIVOS */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+}
+
+/* RESPONSIVE CONTAINER */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 var(--space-sm);
+    }
+}
